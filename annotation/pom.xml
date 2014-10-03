@@ -5,7 +5,7 @@
   <parent>
     <artifactId>parent</artifactId>
     <groupId>com.hannesdorfmann.annotatedadapter</groupId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -18,12 +18,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.android.support</groupId>
-      <artifactId>recyclerview-v7</artifactId>
-      <type>jar</type>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
 

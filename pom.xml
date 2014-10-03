@@ -18,7 +18,7 @@
 
   <groupId>com.hannesdorfmann.annotatedadapter</groupId>
   <artifactId>parent</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>AnnotatedAdapter Parent</name>
@@ -54,6 +54,7 @@
     <junit.version>4.10</junit.version>
     <compile-testing.version>0.5</compile-testing.version>
     <truth.version>0.13</truth.version>
+    <dagger.version>2.0-SNAPSHOT</dagger.version>
   </properties>
 
 
