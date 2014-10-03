@@ -32,6 +32,8 @@ public class ViewTypeSearcher {
                 + "visibility can be annotated with @%s.", element.getSimpleName(),
             element.getEnclosingElement().getSimpleName(), ViewType.class.getSimpleName());
         return false;
+
+        // TODO continue here
       }
     } else {
       ProcessorMessage.error(element,
@@ -43,5 +45,4 @@ public class ViewTypeSearcher {
     return false;
   }
 
-  public List<>
 }

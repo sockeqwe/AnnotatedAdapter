@@ -54,7 +54,7 @@
     <junit.version>4.10</junit.version>
     <compile-testing.version>0.5</compile-testing.version>
     <truth.version>0.13</truth.version>
-    <dagger.version>2.0-SNAPSHOT</dagger.version>
+    <dagger.version>1.2.2</dagger.version>
   </properties>
 
 
