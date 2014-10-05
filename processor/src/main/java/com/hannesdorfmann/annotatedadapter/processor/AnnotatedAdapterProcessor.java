@@ -2,7 +2,9 @@ package com.hannesdorfmann.annotatedadapter.processor;
 
 import com.google.auto.service.AutoService;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
+import com.hannesdorfmann.annotatedadapter.processor.util.AnnotatedAdapterModule;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
+import dagger.ObjectGraph;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.file.Path;
@@ -14,6 +16,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.inject.Inject;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -29,18 +32,27 @@ import javax.lang.model.util.Types;
 @SupportedAnnotationTypes("com.hannesdorfmann.annotatedadapter.annotation.ViewType")
 public class AnnotatedAdapterProcessor extends AbstractProcessor {
 
-  private Elements elementUtils;
-  private Types typeUtils;
-  private Filer filer;
+  @Inject
+  Elements elementUtils;
+
+  @Inject
+  Types typeUtils;
+
+  @Inject
+  Filer filer;
+
+  @Inject
+  ProcessorMessage logger;
+
+  ObjectGraph objectGraph;
 
   @Override
   public synchronized void init(ProcessingEnvironment env) {
     super.init(env);
-    ProcessorMessage.init(env);
 
-    elementUtils = env.getElementUtils();
-    typeUtils = env.getTypeUtils();
-    filer = env.getFiler();
+    objectGraph = ObjectGraph.create(new AnnotatedAdapterModule(env));
+    objectGraph.inject(this);
+
   }
 
   @Override public SourceVersion getSupportedSourceVersion() {
@@ -69,10 +81,10 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     for (Element element : roundEnv.getElementsAnnotatedWith(ViewType.class))
 
       try {
-        ProcessorMessage.error(element, "Path: %s %s", getWorkingDir(), getExecutionPath());
+        logger.error(element, "Path: %s %s", getWorkingDir(), getExecutionPath());
       } catch (UnsupportedEncodingException e) {
         e.printStackTrace();
-        ProcessorMessage.error(element, "Error " + e.getMessage());
+        logger.error(element, "Error " + e.getMessage());
       }
 
     return false;

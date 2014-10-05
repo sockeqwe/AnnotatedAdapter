@@ -4,6 +4,7 @@ import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -13,6 +14,9 @@ import javax.lang.model.element.VariableElement;
  * @author Hannes Dorfmann
  */
 public class ViewTypeSearcher {
+
+  @Inject
+  ProcessorMessage logger;
 
   /**
    * Maps the
@@ -28,7 +32,7 @@ public class ViewTypeSearcher {
 
       // Check if its private
       if (!element.getModifiers().contains(Modifier.PUBLIC)) {
-        ProcessorMessage.error(element, "%s in %s is not public. Only integer fields with public "
+        logger.error(element, "%s in %s is not public. Only integer fields with public "
                 + "visibility can be annotated with @%s.", element.getSimpleName(),
             element.getEnclosingElement().getSimpleName(), ViewType.class.getSimpleName());
         return false;
@@ -36,7 +40,7 @@ public class ViewTypeSearcher {
         // TODO continue here
       }
     } else {
-      ProcessorMessage.error(element,
+      logger.error(element,
           "@%s can only be applied on integer fields. %s is not a field",
           ViewType.class.getSimpleName(), element.getSimpleName());
       return false;

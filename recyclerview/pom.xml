@@ -9,15 +9,21 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>annotation</artifactId>
+  <artifactId>recyclerview</artifactId>
 
   <dependencies>
+
     <dependency>
-      <groupId>com.google.android</groupId>
-      <artifactId>android</artifactId>
-      <scope>provided</scope>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>annotation</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>recyclerview-stub</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
 
