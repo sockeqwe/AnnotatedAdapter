@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
  * The base adapter for handling
  * @author Hannes Dorfmann
  */
-public class AnnotatedAdapter {
+public class AbsListViewAnnotatedAdapter {
 
   protected Context context;
 
