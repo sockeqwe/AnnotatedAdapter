@@ -78,14 +78,10 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
   @Override public boolean process(Set<? extends TypeElement> annotations,
       RoundEnvironment roundEnv) {
 
-    for (Element element : roundEnv.getElementsAnnotatedWith(ViewType.class))
+    ViewTypeSearcher viewTypeSearcher = new ViewTypeSearcher(objectGraph);
+    for (Element element : roundEnv.getElementsAnnotatedWith(ViewType.class)) {
 
-      try {
-        logger.error(element, "Path: %s %s", getWorkingDir(), getExecutionPath());
-      } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
-        logger.error(element, "Error " + e.getMessage());
-      }
+    }
 
     return false;
   }
