@@ -39,11 +39,6 @@ public class AnnotatedAdapterModule {
   }
 
   @Singleton @Provides
-  public ViewTypeSearcher provideViewTypeSeracher() {
-    return new ViewTypeSearcher();
-  }
-
-  @Singleton @Provides
   public ProcessorMessage provideProcessorMessage() {
     return new ProcessorMessage(environment.getMessager());
   }
@@ -51,5 +46,10 @@ public class AnnotatedAdapterModule {
   @Provides
   public Filer providesFiler() {
     return environment.getFiler();
+  }
+
+  @Provides @Singleton
+  public TypeHelper providesTypeHelper(){
+    return new TypeHelper(environment.getElementUtils(), environment.getTypeUtils());
   }
 }

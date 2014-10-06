@@ -80,8 +80,10 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
 
     ViewTypeSearcher viewTypeSearcher = new ViewTypeSearcher(objectGraph);
     for (Element element : roundEnv.getElementsAnnotatedWith(ViewType.class)) {
-
+      viewTypeSearcher.addElementIfNotAlready(element);
     }
+
+
 
     return false;
   }
