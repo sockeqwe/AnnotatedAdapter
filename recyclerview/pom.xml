@@ -24,6 +24,13 @@
       <artifactId>recyclerview-stub</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>android</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
 
