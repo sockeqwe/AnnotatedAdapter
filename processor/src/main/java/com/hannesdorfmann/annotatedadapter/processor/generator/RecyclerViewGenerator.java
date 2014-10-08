@@ -1,22 +1,22 @@
 package com.hannesdorfmann.annotatedadapter.processor.generator;
 
+import com.hannesdorfmann.annotatedadapter.processor.AdapterInfo;
 import dagger.ObjectGraph;
 import javax.annotation.processing.Filer;
 import javax.inject.Inject;
-import javax.lang.model.element.Element;
 
 /**
  * @author Hannes Dorfmann
  */
 public class RecyclerViewGenerator implements CodeGenerator {
 
-  private Element originClass;
+  private AdapterInfo info;
 
   @Inject
   Filer filer;
 
-  public RecyclerViewGenerator(ObjectGraph graph, Element clazz){
-      this.originClass = clazz;
+  public RecyclerViewGenerator(ObjectGraph graph, AdapterInfo info){
+      this.info = info;
   }
 
   @Override public void generateAdapterHelper() {
