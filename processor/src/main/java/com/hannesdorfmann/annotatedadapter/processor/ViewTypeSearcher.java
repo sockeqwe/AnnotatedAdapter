@@ -6,15 +6,18 @@ import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
 import com.hannesdorfmann.annotatedadapter.processor.util.TypeHelper;
 import com.hannesdorfmann.annotatedadapter.recyclerview.AnnotatedAdapter;
 import dagger.ObjectGraph;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.util.Elements;
 
 /**
  * @author Hannes Dorfmann
@@ -25,10 +28,12 @@ public class ViewTypeSearcher {
 
   @Inject TypeHelper typeHelper;
 
+  @Inject Elements elementUtils;
+
   /**
    * Maps the
    */
-  private Map<String, Element> classMap = new LinkedHashMap<String, Element>();
+  private Map<String, TypeElement> classMap = new LinkedHashMap<String, TypeElement>();
 
   public ViewTypeSearcher(ObjectGraph graph) {
     graph.inject(this);
@@ -40,7 +45,7 @@ public class ViewTypeSearcher {
       Element surroundingClass = field.getEnclosingElement();
       String className = surroundingClass.asType().toString();
       if (classMap.get(className) == null) {
-        classMap.put(className, surroundingClass);
+        classMap.put(className, (TypeElement) surroundingClass);
       }
     }
   }
@@ -116,11 +121,40 @@ public class ViewTypeSearcher {
     }
   }
 
+  private boolean isValidAnnotation(Element element, ViewType annotation) {
+
+    if (annotation.model().length > 1) {
+      logger.error(element,
+          "The field %s in %s annotated with @%s has specified a more than one model. Please specify exactly one model or don't set this annotation",
+          element.getSimpleName(), element.asType().toString(), ViewType.class.getSimpleName());
+      return false;
+    }
+
+    return true;
+  }
+
   /**
    * Get all the classes that have annoatated fields
-   * @return
    */
-  public Collection<Element> getClassesWithFields(){
-    return classMap.values();
+  public List<AdapterInfo> getAdapterInfos() {
+
+    List<AdapterInfo> adapterInfos = new ArrayList<AdapterInfo>();
+
+    for (TypeElement element : classMap.values()) {
+
+      AdapterInfo adapterInfo = new AdapterInfo(element);
+      adapterInfos.add(adapterInfo);
+
+      for (Element field : elementUtils.getAllMembers(element)) {
+        if (field.getKind().isField()) {
+          ViewType annotation = field.getAnnotation(ViewType.class);
+          if (annotation != null && isValidAnnotation(field, annotation)) {
+            adapterInfo.addViewTypeInfo(new ViewTypeInfo(field, annotation));
+          }
+        }
+      }
+    }
+
+    return adapterInfos;
   }
 }

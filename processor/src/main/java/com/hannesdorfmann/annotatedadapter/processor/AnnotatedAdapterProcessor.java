@@ -5,7 +5,9 @@ import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import com.hannesdorfmann.annotatedadapter.processor.util.AnnotatedAdapterModule;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
 import dagger.ObjectGraph;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +24,10 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.JavaCompiler;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
 
 /**
  * AnnotationProcessor for AnnotatedAdapter @ViewType
@@ -32,17 +38,13 @@ import javax.lang.model.util.Types;
 @SupportedAnnotationTypes("com.hannesdorfmann.annotatedadapter.annotation.ViewType")
 public class AnnotatedAdapterProcessor extends AbstractProcessor {
 
-  @Inject
-  Elements elementUtils;
+  @Inject Elements elementUtils;
 
-  @Inject
-  Types typeUtils;
+  @Inject Types typeUtils;
 
-  @Inject
-  Filer filer;
+  @Inject Filer filer;
 
-  @Inject
-  ProcessorMessage logger;
+  @Inject ProcessorMessage logger;
 
   ObjectGraph objectGraph;
 
@@ -52,7 +54,6 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
 
     objectGraph = ObjectGraph.create(new AnnotatedAdapterModule(env));
     objectGraph.inject(this);
-
   }
 
   @Override public SourceVersion getSupportedSourceVersion() {
@@ -75,15 +76,36 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     return s;
   }
 
+  private String getExcecutionByClassLoader() {
+    ClassLoader loader = AnnotatedAdapterProcessor.class.getClassLoader();
+    URL url = loader.getResource(".");
+    return url.getFile();
+  }
+
+  private String getByEnv(){
+    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    StandardJavaFileManager fm = compiler.getStandardFileManager(null, null, null);
+
+    Iterable<? extends File> locations = fm.getLocation(StandardLocation.SOURCE_PATH);
+    if (locations.iterator().hasNext()){
+      return locations.iterator().next().getAbsolutePath();
+    }
+    return null;
+  }
+
   @Override public boolean process(Set<? extends TypeElement> annotations,
       RoundEnvironment roundEnv) {
 
     ViewTypeSearcher viewTypeSearcher = new ViewTypeSearcher(objectGraph);
     for (Element element : roundEnv.getElementsAnnotatedWith(ViewType.class)) {
+
+      try {
+        logger.error(element, "Path %s", getExcecutionByClassLoader());
+      } catch (Exception e){
+        e.printStackTrace();
+      }
       viewTypeSearcher.addElementIfNotAlready(element);
     }
-
-
 
     return false;
   }
