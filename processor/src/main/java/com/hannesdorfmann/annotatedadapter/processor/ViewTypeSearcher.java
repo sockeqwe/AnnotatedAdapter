@@ -18,6 +18,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 /**
  * @author Hannes Dorfmann
@@ -30,6 +31,7 @@ public class ViewTypeSearcher {
 
   @Inject Elements elementUtils;
 
+  @Inject Types typeUtils;
   /**
    * Maps the
    */
@@ -134,6 +136,33 @@ public class ViewTypeSearcher {
   }
 
   /**
+   * Checks the type of the adapter
+   *
+   * @return null if its not a subclass of an Abslist adapter or RecyclerViewAdapter
+   */
+  private AdapterInfo.AdapterType isValidAdapterClass(TypeElement adapterClass) {
+
+    TypeElement recyclerAdapter =
+        elementUtils.getTypeElement("com.android.support.v7.widget.RecyclerView.Adapter");
+    if (typeUtils.isSubtype(adapterClass.asType(), recyclerAdapter.asType())) {
+      return AdapterInfo.AdapterType.RECYCLER_VIEW;
+    }
+
+    TypeElement listAdapter = elementUtils.getTypeElement("android.widget.Adapter");
+    if (typeUtils.isSubtype(adapterClass.asType(), listAdapter.asType())) {
+      return AdapterInfo.AdapterType.LIST_VIEW;
+    }
+
+    logger.error(adapterClass, "The class %s contains @%s annotations but is not a subclass of "
+            + "%s nor %s. "
+            + "Make %s extends one of those adapter classes", adapterClass.getSimpleName(),
+        ViewType.class.getSimpleName(), AnnotatedAdapter.class.getCanonicalName(),
+        AbsListViewAnnotatedAdapter.class.getCanonicalName(), adapterClass.getSimpleName());
+    
+    return null;
+  }
+
+  /**
    * Get all the classes that have annoatated fields
    */
   public List<AdapterInfo> getAdapterInfos() {
@@ -142,7 +171,9 @@ public class ViewTypeSearcher {
 
     for (TypeElement element : classMap.values()) {
 
-      AdapterInfo adapterInfo = new AdapterInfo(element);
+      AdapterInfo.AdapterType adapterType = isValidAdapterClass(element);
+
+      AdapterInfo adapterInfo = new AdapterInfo(element, adapterType);
       adapterInfos.add(adapterInfo);
 
       for (Element field : elementUtils.getAllMembers(element)) {

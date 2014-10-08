@@ -9,14 +9,22 @@ import javax.lang.model.element.Element;
  */
 public class AdapterInfo {
 
+
+  public enum AdapterType {
+    RECYCLER_VIEW, LIST_VIEW
+  }
+
   private List<ViewTypeInfo> viewTypes = new ArrayList<ViewTypeInfo>();
   private Element adapterClass;
+  private AdapterType adapterType;
 
-  public AdapterInfo(Element adapterClass) {
+  public AdapterInfo(Element adapterClass, AdapterType adapterType) {
     this.adapterClass = adapterClass;
+    this.adapterType = adapterType;
   }
 
   public void addViewTypeInfo(ViewTypeInfo i){
     viewTypes.add(i);
   }
+
 }
