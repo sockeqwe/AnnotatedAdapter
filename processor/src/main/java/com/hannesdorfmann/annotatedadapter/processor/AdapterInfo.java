@@ -25,5 +25,5 @@ public class AdapterInfo {
   public void addViewTypeInfo(ViewTypeInfo i){
     viewTypes.add(i);
   }
-  
+
 }
