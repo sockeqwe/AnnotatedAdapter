@@ -21,16 +21,15 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 /**
+ * Searches for @ViewTypes and collects data about annotated field and surrounding adapter classes
+ *
  * @author Hannes Dorfmann
  */
 public class ViewTypeSearcher {
 
   @Inject ProcessorMessage logger;
-
   @Inject TypeHelper typeHelper;
-
   @Inject Elements elementUtils;
-
   @Inject Types typeUtils;
   /**
    * Maps the
@@ -45,6 +44,9 @@ public class ViewTypeSearcher {
 
     if (isValidField(field) && isFieldInValidClass((VariableElement) field)) {
       Element surroundingClass = field.getEnclosingElement();
+      if (surroundingClass.getModifiers().contains(Modifier.ABSTRACT)) {
+        return; // Skip abstract classes
+      }
       String className = surroundingClass.asType().toString();
       if (classMap.get(className) == null) {
         classMap.put(className, (TypeElement) surroundingClass);
@@ -158,7 +160,7 @@ public class ViewTypeSearcher {
             + "Make %s extends one of those adapter classes", adapterClass.getSimpleName(),
         ViewType.class.getSimpleName(), AnnotatedAdapter.class.getCanonicalName(),
         AbsListViewAnnotatedAdapter.class.getCanonicalName(), adapterClass.getSimpleName());
-    
+
     return null;
   }
 

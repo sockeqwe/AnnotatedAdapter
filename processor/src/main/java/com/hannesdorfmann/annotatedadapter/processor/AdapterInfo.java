@@ -9,7 +9,6 @@ import javax.lang.model.element.Element;
  */
 public class AdapterInfo {
 
-
   public enum AdapterType {
     RECYCLER_VIEW, LIST_VIEW
   }
@@ -26,5 +25,5 @@ public class AdapterInfo {
   public void addViewTypeInfo(ViewTypeInfo i){
     viewTypes.add(i);
   }
-
+  
 }
