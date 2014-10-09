@@ -29,8 +29,22 @@ public class RecyclerViewGenerator implements CodeGenerator {
     this.info = info;
   }
 
-  @Override public void generateAdapterHelper() {
+  @Override public void generateAdapterHelper() throws IOException {
 
+    String packageName = typeHelper.getPackageName(info.getAdapterClass());
+    String binderClassName = info.getBinderClassName();
+    String qualifiedBinderName = packageName + binderClassName;
+
+    //
+    // Write code
+    //
+
+    JavaFileObject jfo = filer.createSourceFile(qualifiedBinderName, info.getAdapterClass());
+    Writer writer = jfo.openWriter();
+    JavaWriter jw = new JavaWriter(writer);
+
+
+    jw.close();
   }
 
   @Override public void generateBinderInterface() throws IOException {

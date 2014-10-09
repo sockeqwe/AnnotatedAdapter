@@ -12,9 +12,9 @@ import com.android.support.v7.widget.RecyclerView;
  */
 public abstract class AnnotatedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-  private static Delegators delgators;
+  private static RecyclerDelegators delgators;
 
-  private AnnotatedAdapterDelegator adapterDelegator;
+  private RecyclerAdapterDelegator adapterDelegator;
 
   protected LayoutInflater inflater;
 

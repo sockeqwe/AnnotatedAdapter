@@ -6,7 +6,7 @@ import com.android.support.v7.widget.RecyclerView;
 /**
  * @author Hannes Dorfmann
  */
-public interface AnnotatedAdapterDelegator {
+public interface RecyclerAdapterDelegator {
 
   public void checkBinderInterfaceImplemented(AnnotatedAdapter adapter);
 

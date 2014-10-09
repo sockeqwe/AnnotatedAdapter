@@ -15,6 +15,7 @@ public class AdapterInfo {
 
   private static final String HOLDERS_SUFFIX = "Holders";
   private static final String BINDER_SUFFIX = "Binder";
+  private static final String DELEGATOR_SUFFIX = "AdapterDelegator";
 
   private List<ViewTypeInfo> viewTypes = new ArrayList<ViewTypeInfo>();
   private TypeElement adapterClass;
@@ -43,5 +44,9 @@ public class AdapterInfo {
 
   public String getBinderClassName() {
     return adapterClass.getSimpleName() + BINDER_SUFFIX;
+  }
+
+  public String getAdapterDelegatorClassName() {
+    return adapterClass.getSimpleName() + DELEGATOR_SUFFIX;
   }
 }
