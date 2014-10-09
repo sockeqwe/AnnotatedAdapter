@@ -1,5 +1,6 @@
 package com.hannesdorfmann.annotatedadapter.processor;
 
+import com.hannesdorfmann.annotatedadapter.annotation.Field;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import javax.lang.model.element.Element;
 
@@ -10,6 +11,9 @@ import javax.lang.model.element.Element;
  */
 public class ViewTypeInfo {
 
+  private static final String VIEWHOLDER_SUFFIX = "ViewHolder";
+  private static final String METHOD_PREFIX = "bind";
+
   private Element field;
   private ViewType annotation;
 
@@ -17,4 +21,19 @@ public class ViewTypeInfo {
     this.field = field;
     this.annotation = annotation;
   }
+
+  public String getViewHolderClassName() {
+    return field.getSimpleName() + VIEWHOLDER_SUFFIX;
+  }
+
+  public String getBinderMethodName(){
+    return METHOD_PREFIX+getViewHolderClassName();
+  }
+
+
+  public Field[] getFields(){
+    return annotation.fields();
+  }
+
+
 }

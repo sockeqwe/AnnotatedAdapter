@@ -2,7 +2,7 @@ package com.hannesdorfmann.annotatedadapter.processor;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 
 /**
  * @author Hannes Dorfmann
@@ -13,17 +13,35 @@ public class AdapterInfo {
     RECYCLER_VIEW, LIST_VIEW
   }
 
+  private static final String HOLDERS_SUFFIX = "Holders";
+  private static final String BINDER_SUFFIX = "Binder";
+
   private List<ViewTypeInfo> viewTypes = new ArrayList<ViewTypeInfo>();
-  private Element adapterClass;
+  private TypeElement adapterClass;
   private AdapterType adapterType;
 
-  public AdapterInfo(Element adapterClass, AdapterType adapterType) {
+  public AdapterInfo(TypeElement adapterClass, AdapterType adapterType) {
     this.adapterClass = adapterClass;
     this.adapterType = adapterType;
   }
 
-  public void addViewTypeInfo(ViewTypeInfo i){
+  public void addViewTypeInfo(ViewTypeInfo i) {
     viewTypes.add(i);
   }
 
+  public List<ViewTypeInfo> getViewTypes() {
+    return viewTypes;
+  }
+
+  public TypeElement getAdapterClass() {
+    return adapterClass;
+  }
+
+  public String getViewHoldersClassName() {
+    return adapterClass.getSimpleName() + HOLDERS_SUFFIX;
+  }
+
+  public String getBinderClassName() {
+    return adapterClass.getSimpleName() + BINDER_SUFFIX;
+  }
 }

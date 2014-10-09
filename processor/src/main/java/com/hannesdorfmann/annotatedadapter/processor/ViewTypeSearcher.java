@@ -62,7 +62,7 @@ public class ViewTypeSearcher {
     }
 
     if (field.getEnclosingElement().getKind() != ElementKind.CLASS) {
-      logger.error(field, "Only field in a class can be annotated with @%s (caused by %s in %s)",
+      logger.error(field, "Only fields in a class can be annotated with @%s (caused by %s in %s)",
           ViewType.class, field.getSimpleName(), field.getEnclosingElement().asType().toString());
       return false;
     }

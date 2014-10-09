@@ -1,6 +1,8 @@
 package com.hannesdorfmann.annotatedadapter.processor.util;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -24,5 +26,14 @@ public class TypeHelper {
 
   public boolean isOfType(TypeMirror typeMirror, String type) {
     return types.isAssignable(typeMirror, elements.getTypeElement(type).asType());
+  }
+
+  public String getPackageName(TypeElement type) {
+    PackageElement pkg = elements.getPackageOf(type);
+    if (!pkg.isUnnamed()) {
+      return pkg.getQualifiedName().toString();
+    } else {
+      return ""; // Default package
+    }
   }
 }
