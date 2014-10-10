@@ -35,5 +35,13 @@ public class ViewTypeInfo {
     return annotation.fields();
   }
 
+  public Class<?> getModelClass(){
+    if (annotation.model().length == 0 ) {
+      return null;
+    }
+
+    return annotation.model()[0];
+  }
+
 
 }
