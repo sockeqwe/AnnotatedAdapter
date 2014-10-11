@@ -49,4 +49,8 @@ public class AdapterInfo {
   public String getAdapterDelegatorClassName() {
     return adapterClass.getSimpleName() + DELEGATOR_SUFFIX;
   }
+
+  public String getAdapterClassName(){
+    return adapterClass.getSimpleName().toString();
+  }
 }

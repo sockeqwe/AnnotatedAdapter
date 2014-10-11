@@ -1,14 +1,19 @@
 package com.hannesdorfmann.annotatedadapter.processor.generator;
 
+import com.android.support.v7.widget.RecyclerView;
 import com.hannesdorfmann.annotatedadapter.annotation.Field;
 import com.hannesdorfmann.annotatedadapter.processor.AdapterInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeInfo;
 import com.hannesdorfmann.annotatedadapter.processor.util.TypeHelper;
+import com.hannesdorfmann.annotatedadapter.recyclerview.AnnotatedAdapter;
+import com.hannesdorfmann.annotatedadapter.recyclerview.RecyclerAdapterDelegator;
 import com.squareup.javawriter.JavaWriter;
 import dagger.ObjectGraph;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import javax.annotation.processing.Filer;
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
@@ -20,9 +25,7 @@ import javax.tools.JavaFileObject;
 public class RecyclerViewGenerator implements CodeGenerator {
 
   private AdapterInfo info;
-
   @Inject Filer filer;
-
   @Inject TypeHelper typeHelper;
 
   public RecyclerViewGenerator(ObjectGraph graph, AdapterInfo info) {
@@ -31,19 +34,52 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
   @Override public void generateAdapterHelper() throws IOException {
 
+    if (info.getViewTypes().isEmpty()) {
+      return;
+    }
+
     String packageName = typeHelper.getPackageName(info.getAdapterClass());
-    String binderClassName = info.getBinderClassName();
-    String qualifiedBinderName = packageName + binderClassName;
+    String delegatorClassName = info.getAdapterDelegatorClassName();
+    String delegatorBinderName = packageName + delegatorClassName;
 
     //
     // Write code
     //
 
-    JavaFileObject jfo = filer.createSourceFile(qualifiedBinderName, info.getAdapterClass());
+    JavaFileObject jfo = filer.createSourceFile(delegatorBinderName, info.getAdapterClass());
     Writer writer = jfo.openWriter();
     JavaWriter jw = new JavaWriter(writer);
 
+    jw.emitPackage(packageName);
+    jw.emitEmptyLine();
+    jw.emitJavadoc("Generated class by AnnotatedAdapter . Do not modify this code!");
+    jw.beginType(delegatorClassName, "class", EnumSet.of(Modifier.PUBLIC), null,
+        RecyclerAdapterDelegator.class.getCanonicalName());
+    jw.emitEmptyLine();
 
+    // Check binder interface implemented
+    jw.beginMethod("void", "checkBinderInterfaceImplemented", EnumSet.of(Modifier.PUBLIC),
+        AnnotatedAdapter.class.getCanonicalName(), "adapter");
+    jw.beginControlFlow("if (!(adapter instanceof %s)) ", info.getBinderClassName());
+    jw.emitStatement(
+        "throw new java.lang.RuntimeException(\"The adapter class %s must implement the binder interface %s \")",
+        info.getAdapterClassName(), info.getBinderClassName());
+    jw.endControlFlow();
+    jw.endMethod();
+
+    // ViewTypeCount
+    jw.beginMethod("int", "getViewTypeCount", EnumSet.of(Modifier.PUBLIC));
+    jw.emitStatement("return %d", info.getViewTypes().size());
+    jw.endMethod();
+
+    // onCreateViewHolder
+    jw.beginMethod(RecyclerView.ViewHolder.class.getCanonicalName(), "onCreateViewHolder",
+        EnumSet.of(Modifier.PUBLIC), "android.view.ViewGroup", "viewGroup", "int", "viewType");
+
+
+    jw.endMethod();
+    
+    jw.endType();
     jw.close();
   }
 
@@ -72,8 +108,20 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     for (ViewTypeInfo vt : info.getViewTypes()) {
       jw.emitEmptyLine();
-      jw.beginMethod("void", vt.getBinderMethodName(), EnumSet.of(Modifier.PUBLIC),
-          vt.getViewHolderClassName(), "vh");
+      List<String> params = new ArrayList(4);
+
+      params.add(vt.getViewHolderClassName());
+      params.add("vh");
+
+      Class<?> model = vt.getModelClass();
+      if (model != null) {
+        params.add(model.getCanonicalName());
+        params.add("model");
+      }
+
+      jw.beginMethod("void", vt.getBinderMethodName(), EnumSet.of(Modifier.PUBLIC), params,
+          new ArrayList<String>());
+
       jw.endMethod();
       jw.emitEmptyLine();
     }

@@ -43,5 +43,8 @@ public class ViewTypeInfo {
     return annotation.model()[0];
   }
 
+  public boolean hasModelClass(){
+    return getModelClass() != null;
+  }
 
 }
