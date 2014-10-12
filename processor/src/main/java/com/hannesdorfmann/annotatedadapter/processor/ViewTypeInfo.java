@@ -22,29 +22,39 @@ public class ViewTypeInfo {
     this.annotation = annotation;
   }
 
+  public String getFieldName() {
+    return field.getSimpleName().toString();
+  }
+
   public String getViewHolderClassName() {
-    return field.getSimpleName() + VIEWHOLDER_SUFFIX;
+    return field.getSimpleName().toString() + VIEWHOLDER_SUFFIX;
   }
 
-  public String getBinderMethodName(){
-    return METHOD_PREFIX+getViewHolderClassName();
+  public String getBinderMethodName() {
+    return METHOD_PREFIX + getViewHolderClassName();
   }
 
-
-  public Field[] getFields(){
+  public Field[] getFields() {
     return annotation.fields();
   }
 
-  public Class<?> getModelClass(){
-    if (annotation.model().length == 0 ) {
+  public Class<?> getModelClass() {
+    if (annotation.model().length == 0) {
       return null;
     }
 
     return annotation.model()[0];
   }
 
-  public boolean hasModelClass(){
+  public String getQualifiedModelClass(){
+    return getModelClass().getCanonicalName();
+  }
+
+  public boolean hasModelClass() {
     return getModelClass() != null;
   }
 
+  public int getLayoutRes(){
+    return annotation.layout();
+  }
 }

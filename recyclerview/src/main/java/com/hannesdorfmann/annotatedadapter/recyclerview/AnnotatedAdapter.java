@@ -38,4 +38,8 @@ public abstract class AnnotatedAdapter extends RecyclerView.Adapter<RecyclerView
   @Override public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
     adapterDelegator.onBindViewHolder(viewHolder, i);
   }
+
+  public LayoutInflater getInflater(){
+    return inflater;
+  }
 }

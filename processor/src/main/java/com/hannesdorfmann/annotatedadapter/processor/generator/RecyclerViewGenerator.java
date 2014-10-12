@@ -74,11 +74,61 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     // onCreateViewHolder
     jw.beginMethod(RecyclerView.ViewHolder.class.getCanonicalName(), "onCreateViewHolder",
-        EnumSet.of(Modifier.PUBLIC), "android.view.ViewGroup", "viewGroup", "int", "viewType");
+        EnumSet.of(Modifier.PUBLIC), "android.view.ViewGroup", "viewGroup", "int", "viewType",
+        AnnotatedAdapter.class.getCanonicalName(), "adapter");
 
+    jw.emitStatement("%s ad = (%s) adapter", info.getAdapterClass(), info.getAdapterClass());
+    jw.emitEmptyLine();
+
+    int ifs = 0;
+
+    for (ViewTypeInfo vt : info.getViewTypes()) {
+      jw.beginControlFlow((ifs > 0 ? "else " : "") + "if (viewType == ad.%s)", vt.getFieldName());
+      jw.emitStatement("android.view.View v = ad.getInflater().inflate(%d, viewGroup, false)",
+          vt.getLayoutRes());
+      jw.endControlFlow();
+      ifs++;
+    }
+
+    jw.emitEmptyLine();
+    jw.emitStatement(
+        "throw new java.lang.IllegalArgumentException(\"Unknown view type \"+viewType)");
+    jw.endMethod();
+
+    // onBindViewHolder
+    jw.beginMethod("void", "onBindViewHolder", EnumSet.of(Modifier.PUBLIC),
+        "com.android.support.v7.widget.RecyclerView.ViewHolder", "vh", "int", "position");
+
+    jw.emitStatement("%s binder = (%s) adapter", info.getBinderClassName(),
+        info.getBinderClassName());
+
+    ifs = 0;
+    for (ViewTypeInfo vt : info.getViewTypes()) {
+      jw.beginControlFlow((ifs > 0 ? "else " : "") + "if (viewType instanceof %s)",
+          vt.getViewHolderClassName());
+
+      StringBuilder builder = new StringBuilder("binder.");
+      builder.append(vt.getBinderMethodName());
+      builder.append("( (");
+      builder.append(vt.getViewHolderClassName());
+      builder.append(") vh, position");
+      if (vt.hasModelClass()) {
+        builder.append(", (");
+        builder.append(vt.getQualifiedModelClass());
+        builder.append(") getItem(position)");
+      }
+      builder.append(")");
+
+      jw.emitStatement(builder.toString());
+      jw.endControlFlow();
+      ifs++;
+    }
+
+    jw.emitStatement("throw new java.lang.IllegalArgumentException("
+            + "\"Binder method not found for unknown viewholder class\"+vh.class.getCanonicalName())");
 
     jw.endMethod();
-    
+
     jw.endType();
     jw.close();
   }
@@ -108,14 +158,16 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     for (ViewTypeInfo vt : info.getViewTypes()) {
       jw.emitEmptyLine();
-      List<String> params = new ArrayList(4);
+      List<String> params = new ArrayList(6);
 
       params.add(vt.getViewHolderClassName());
       params.add("vh");
 
-      Class<?> model = vt.getModelClass();
-      if (model != null) {
-        params.add(model.getCanonicalName());
+      params.add("int");
+      params.add("position");
+
+      if (vt.hasModelClass()) {
+        params.add(vt.getQualifiedModelClass());
         params.add("model");
       }
 
