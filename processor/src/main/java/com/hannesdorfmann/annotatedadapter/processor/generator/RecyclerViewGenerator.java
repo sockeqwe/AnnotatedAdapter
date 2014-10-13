@@ -30,9 +30,10 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
   public RecyclerViewGenerator(ObjectGraph graph, AdapterInfo info) {
     this.info = info;
+    graph.inject(this);
   }
 
-  @Override public void generateAdapterHelper() throws IOException {
+  private void generateAdapterHelper() throws IOException {
 
     if (info.getViewTypes().isEmpty()) {
       return;
@@ -133,7 +134,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.close();
   }
 
-  @Override public void generateBinderInterface() throws IOException {
+    private void generateBinderInterface() throws IOException {
 
     if (info.getViewTypes().isEmpty()) {
       return;
@@ -182,7 +183,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.close();
   }
 
-  @Override public void generateViewHolders() throws IOException {
+  private void generateViewHolders() throws IOException {
 
     if (info.getViewTypes().isEmpty()) {
       return;
@@ -238,5 +239,11 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     jw.endType(); // End of holders class
     jw.close();
+  }
+
+  @Override public void generateCode() throws IOException {
+    generateBinderInterface();
+    generateViewHolders();
+    generateAdapterHelper();
   }
 }

@@ -2,6 +2,8 @@ package com.hannesdorfmann.annotatedadapter.processor;
 
 import com.google.auto.service.AutoService;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
+import com.hannesdorfmann.annotatedadapter.processor.generator.CodeGenerator;
+import com.hannesdorfmann.annotatedadapter.processor.generator.RecyclerViewGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.util.AnnotatedAdapterModule;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
 import dagger.ObjectGraph;
@@ -82,12 +84,12 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     return url.getFile();
   }
 
-  private String getByEnv(){
+  private String getByEnv() {
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     StandardJavaFileManager fm = compiler.getStandardFileManager(null, null, null);
 
     Iterable<? extends File> locations = fm.getLocation(StandardLocation.SOURCE_PATH);
-    if (locations.iterator().hasNext()){
+    if (locations.iterator().hasNext()) {
       return locations.iterator().next().getAbsolutePath();
     }
     return null;
@@ -96,15 +98,30 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
   @Override public boolean process(Set<? extends TypeElement> annotations,
       RoundEnvironment roundEnv) {
 
+    // Search for annotated fields
     ViewTypeSearcher viewTypeSearcher = new ViewTypeSearcher(objectGraph);
     for (Element element : roundEnv.getElementsAnnotatedWith(ViewType.class)) {
-
-      try {
-        logger.error(element, "Path %s", getExcecutionByClassLoader());
-      } catch (Exception e){
-        e.printStackTrace();
-      }
       viewTypeSearcher.addElementIfNotAlready(element);
+    }
+
+    // Code generators
+    try {
+      for (AdapterInfo adapterInfo : viewTypeSearcher.getAdapterInfos()) {
+
+        if (adapterInfo.generatesCode()) {
+
+          if (adapterInfo.getAdapterType() == AdapterInfo.AdapterType.RECYCLER_VIEW) {
+
+            CodeGenerator codeGen = new RecyclerViewGenerator(objectGraph, adapterInfo);
+            codeGen.generateCode();
+          } else {
+            // TODO listview generator
+          }
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      // TODO logger
     }
 
     return false;

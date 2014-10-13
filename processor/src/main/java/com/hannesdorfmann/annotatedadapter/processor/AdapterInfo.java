@@ -53,4 +53,13 @@ public class AdapterInfo {
   public String getAdapterClassName(){
     return adapterClass.getSimpleName().toString();
   }
+
+
+  public boolean generatesCode(){
+    return !viewTypes.isEmpty();
+  }
+
+  public AdapterType getAdapterType() {
+    return adapterType;
+  }
 }

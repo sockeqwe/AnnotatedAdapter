@@ -7,9 +7,5 @@ import java.io.IOException;
  */
 public interface CodeGenerator {
 
-  public void generateAdapterHelper() throws IOException;
-
-  public void generateBinderInterface() throws IOException;
-
-  public void generateViewHolders() throws IOException;
+  public void generateCode() throws IOException;
 }
