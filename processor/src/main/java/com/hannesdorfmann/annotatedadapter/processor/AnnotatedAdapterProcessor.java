@@ -181,7 +181,7 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     jw.emitEmptyLine();
 
     for (AdapterInfo info : adapters) {
-      jw.beginControlFlow("if (name.equals(\"%s\")", info.getQualifiedAdapterClassName());
+      jw.beginControlFlow("if (name.equals(\"%s\"))", info.getQualifiedAdapterClassName());
       jw.emitStatement("return new %s()", info.getQualifiedAdapterDelegatorClassName());
       jw.endControlFlow();
       jw.emitEmptyLine();
