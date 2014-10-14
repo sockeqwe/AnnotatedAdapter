@@ -122,6 +122,8 @@ public class RecyclerViewGenerator implements CodeGenerator {
       StringBuilder builder = new StringBuilder("binder.");
       builder.append(vt.getBinderMethodName());
       builder.append("( (");
+      builder.append(info.getViewHoldersClassName());
+      builder.append(".");
       builder.append(vt.getViewHolderClassName());
       builder.append(") vh, position");
       if (vt.hasModelClass()) {
@@ -132,12 +134,13 @@ public class RecyclerViewGenerator implements CodeGenerator {
       builder.append(")");
 
       jw.emitStatement(builder.toString());
+      jw.emitStatement("return");
       jw.endControlFlow();
       ifs++;
     }
 
     jw.emitStatement("throw new java.lang.IllegalArgumentException("
-        + "\"Binder method not found for unknown viewholder class\"+vh.class.getCanonicalName())");
+        + "\"Binder method not found for unknown viewholder class \" + vh.toString())");
 
     jw.endMethod();
 
@@ -172,7 +175,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
       jw.emitEmptyLine();
       List<String> params = new ArrayList(6);
 
-      params.add(vt.getViewHolderClassName());
+      params.add(info.getViewHoldersClassName() + "." + vt.getViewHolderClassName());
       params.add("vh");
 
       params.add("int");

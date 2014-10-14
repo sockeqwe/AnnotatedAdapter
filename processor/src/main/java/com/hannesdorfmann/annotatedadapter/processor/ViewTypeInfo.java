@@ -27,7 +27,10 @@ public class ViewTypeInfo {
   }
 
   public String getViewHolderClassName() {
-    return field.getSimpleName().toString() + VIEWHOLDER_SUFFIX;
+    String name = field.getSimpleName().toString() + VIEWHOLDER_SUFFIX;
+    char first = Character.toUpperCase(name.charAt(0));
+    name = first + name.substring(1);
+    return name;
   }
 
   public String getBinderMethodName() {
@@ -46,7 +49,7 @@ public class ViewTypeInfo {
     return annotation.model()[0];
   }
 
-  public String getQualifiedModelClass(){
+  public String getQualifiedModelClass() {
     return getModelClass().getCanonicalName();
   }
 
@@ -54,7 +57,7 @@ public class ViewTypeInfo {
     return getModelClass() != null;
   }
 
-  public int getLayoutRes(){
+  public int getLayoutRes() {
     return annotation.layout();
   }
 }
