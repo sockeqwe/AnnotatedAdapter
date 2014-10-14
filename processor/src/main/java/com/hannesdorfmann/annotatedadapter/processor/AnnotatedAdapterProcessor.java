@@ -177,7 +177,7 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
         EnumSet.of(Modifier.PUBLIC), "SupportAnnotatedAdapter", "adapter");
 
     jw.emitEmptyLine();
-    jw.emitStatement("String name = adapter.class.getCanonicalName()");
+    jw.emitStatement("String name = adapter.getClass().getCanonicalName()");
     jw.emitEmptyLine();
 
     for (AdapterInfo info : adapters) {
@@ -190,6 +190,8 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     jw.emitStatement("throw new RuntimeException(\"Could not find adapter delegate for \" + adapter)");
     jw.endMethod();
     jw.emitEmptyLine();
+
+    jw.endType();
 
     jw.close();
   }
