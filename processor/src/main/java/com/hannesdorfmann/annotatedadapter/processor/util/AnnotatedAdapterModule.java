@@ -2,6 +2,7 @@ package com.hannesdorfmann.annotatedadapter.processor.util;
 
 import com.hannesdorfmann.annotatedadapter.processor.AnnotatedAdapterProcessor;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeSearcher;
+import com.hannesdorfmann.annotatedadapter.processor.generator.RecyclerViewGenerator;
 import dagger.Module;
 import dagger.Provides;
 import javax.annotation.processing.Filer;
@@ -15,7 +16,7 @@ import javax.lang.model.util.Types;
  */
 @Module(
     injects = {
-        AnnotatedAdapterProcessor.class, ViewTypeSearcher.class, ProcessorMessage.class
+        AnnotatedAdapterProcessor.class, ViewTypeSearcher.class, RecyclerViewGenerator.class
     }
 
     , library = true // TODO remove
@@ -49,7 +50,7 @@ public class AnnotatedAdapterModule {
   }
 
   @Provides @Singleton
-  public TypeHelper providesTypeHelper(){
+  public TypeHelper providesTypeHelper() {
     return new TypeHelper(environment.getElementUtils(), environment.getTypeUtils());
   }
 }

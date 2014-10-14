@@ -5,7 +5,7 @@
   <parent>
     <artifactId>parent</artifactId>
     <groupId>com.hannesdorfmann.annotatedadapter</groupId>
-    <version>0.1.7-SNAPSHOT</version>
+    <version>0.1.12-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -23,6 +23,7 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>recyclerview-stub</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

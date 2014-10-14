@@ -1,11 +1,11 @@
 package com.hannesdorfmann.annotatedadapter.processor.generator;
 
-import com.android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView;
 import com.hannesdorfmann.annotatedadapter.annotation.Field;
 import com.hannesdorfmann.annotatedadapter.processor.AdapterInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeInfo;
 import com.hannesdorfmann.annotatedadapter.processor.util.TypeHelper;
-import com.hannesdorfmann.annotatedadapter.recyclerview.AnnotatedAdapter;
+import com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter;
 import com.hannesdorfmann.annotatedadapter.recyclerview.RecyclerAdapterDelegator;
 import com.squareup.javawriter.JavaWriter;
 import dagger.ObjectGraph;
@@ -60,7 +60,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     // Check binder interface implemented
     jw.beginMethod("void", "checkBinderInterfaceImplemented", EnumSet.of(Modifier.PUBLIC),
-        AnnotatedAdapter.class.getCanonicalName(), "adapter");
+        SupportAnnotatedAdapter.class.getCanonicalName(), "adapter");
     jw.beginControlFlow("if (!(adapter instanceof %s)) ", info.getBinderClassName());
     jw.emitStatement(
         "throw new java.lang.RuntimeException(\"The adapter class %s must implement the binder interface %s \")",
@@ -76,7 +76,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
     // onCreateViewHolder
     jw.beginMethod(RecyclerView.ViewHolder.class.getCanonicalName(), "onCreateViewHolder",
         EnumSet.of(Modifier.PUBLIC), "android.view.ViewGroup", "viewGroup", "int", "viewType",
-        AnnotatedAdapter.class.getCanonicalName(), "adapter");
+        SupportAnnotatedAdapter.class.getCanonicalName(), "adapter");
 
     jw.emitStatement("%s ad = (%s) adapter", info.getAdapterClass(), info.getAdapterClass());
     jw.emitEmptyLine();
@@ -98,7 +98,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     // onBindViewHolder
     jw.beginMethod("void", "onBindViewHolder", EnumSet.of(Modifier.PUBLIC),
-        "com.android.support.v7.widget.RecyclerView.ViewHolder", "vh", "int", "position");
+        "android.support.v7.widget.RecyclerView.ViewHolder", "vh", "int", "position");
 
     jw.emitStatement("%s binder = (%s) adapter", info.getBinderClassName(),
         info.getBinderClassName());

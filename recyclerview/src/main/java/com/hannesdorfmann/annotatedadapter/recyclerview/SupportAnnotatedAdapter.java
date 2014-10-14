@@ -1,16 +1,17 @@
 package com.hannesdorfmann.annotatedadapter.recyclerview;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import com.android.support.v7.widget.RecyclerView;
 
 /**
  * This is the base class for adapters for recyclerviews
  *
  * @author Hannes Dorfmann
  */
-public abstract class AnnotatedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class SupportAnnotatedAdapter extends
+    RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
   private static RecyclerDelegators delgators;
 
@@ -18,7 +19,7 @@ public abstract class AnnotatedAdapter extends RecyclerView.Adapter<RecyclerView
 
   protected LayoutInflater inflater;
 
-  public AnnotatedAdapter(Context context) {
+  public SupportAnnotatedAdapter(Context context) {
     inflater = LayoutInflater.from(context);
 
     if (delgators == null) {

@@ -1,14 +1,14 @@
 package com.hannesdorfmann.annotatedadapter.recyclerview;
 
 import android.view.ViewGroup;
-import com.android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView;
 
 /**
  * @author Hannes Dorfmann
  */
 public interface RecyclerAdapterDelegator {
 
-  public void checkBinderInterfaceImplemented(AnnotatedAdapter adapter);
+  public void checkBinderInterfaceImplemented(SupportAnnotatedAdapter adapter);
 
   public int getViewTypeCount();
 

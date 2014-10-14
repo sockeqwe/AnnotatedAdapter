@@ -4,7 +4,6 @@ import com.hannesdorfmann.annotatedadapter.AbsListViewAnnotatedAdapter;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
 import com.hannesdorfmann.annotatedadapter.processor.util.TypeHelper;
-import com.hannesdorfmann.annotatedadapter.recyclerview.AnnotatedAdapter;
 import dagger.ObjectGraph;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -26,6 +25,9 @@ import javax.lang.model.util.Types;
  * @author Hannes Dorfmann
  */
 public class ViewTypeSearcher {
+
+  private static final String SUPPORT_RECYCLER_ADAPTER = "com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter";
+
 
   @Inject ProcessorMessage logger;
   @Inject TypeHelper typeHelper;
@@ -73,13 +75,13 @@ public class ViewTypeSearcher {
     }
 
     if (typeHelper.isOfType(field.getEnclosingElement(),
-        AnnotatedAdapter.class.getCanonicalName())) {
+        SUPPORT_RECYCLER_ADAPTER)) {
       return true;
     }
 
     // Failing
     logger.error(field, "The class with @%s annotations must extend from %s or %s",
-        ViewType.class.getSimpleName(), AnnotatedAdapter.class.getCanonicalName(),
+        ViewType.class.getSimpleName(), SUPPORT_RECYCLER_ADAPTER,
         AbsListViewAnnotatedAdapter.class.getCanonicalName());
 
     return false;
@@ -145,12 +147,12 @@ public class ViewTypeSearcher {
   private AdapterInfo.AdapterType isValidAdapterClass(TypeElement adapterClass) {
 
     TypeElement recyclerAdapter =
-        elementUtils.getTypeElement("com.android.support.v7.widget.RecyclerView.Adapter");
+        elementUtils.getTypeElement(SUPPORT_RECYCLER_ADAPTER);
     if (typeUtils.isSubtype(adapterClass.asType(), recyclerAdapter.asType())) {
       return AdapterInfo.AdapterType.RECYCLER_VIEW;
     }
 
-    TypeElement listAdapter = elementUtils.getTypeElement("android.widget.Adapter");
+    TypeElement listAdapter = elementUtils.getTypeElement("android.widget.Adapter"); // TODO adapter
     if (typeUtils.isSubtype(adapterClass.asType(), listAdapter.asType())) {
       return AdapterInfo.AdapterType.LIST_VIEW;
     }
@@ -158,7 +160,7 @@ public class ViewTypeSearcher {
     logger.error(adapterClass, "The class %s contains @%s annotations but is not a subclass of "
             + "%s nor %s. "
             + "Make %s extends one of those adapter classes", adapterClass.getSimpleName(),
-        ViewType.class.getSimpleName(), AnnotatedAdapter.class.getCanonicalName(),
+        ViewType.class.getSimpleName(),SUPPORT_RECYCLER_ADAPTER,
         AbsListViewAnnotatedAdapter.class.getCanonicalName(), adapterClass.getSimpleName());
 
     return null;

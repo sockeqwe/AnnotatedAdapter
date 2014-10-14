@@ -5,5 +5,5 @@ package com.hannesdorfmann.annotatedadapter.recyclerview;
  */
 interface RecyclerDelegators {
 
-  RecyclerAdapterDelegator getDelegator(AnnotatedAdapter adapter);
+  RecyclerAdapterDelegator getDelegator(SupportAnnotatedAdapter adapter);
 }
