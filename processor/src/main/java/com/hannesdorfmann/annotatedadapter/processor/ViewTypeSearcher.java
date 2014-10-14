@@ -26,7 +26,7 @@ import javax.lang.model.util.Types;
  */
 public class ViewTypeSearcher {
 
-  private static final String SUPPORT_RECYCLER_ADAPTER = "com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter";
+  public static final String SUPPORT_RECYCLER_ADAPTER = "com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter";
 
 
   @Inject ProcessorMessage logger;

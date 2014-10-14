@@ -10,12 +10,12 @@ import android.view.ViewGroup;
  *
  * @author Hannes Dorfmann
  */
-public abstract class SupportAnnotatedAdapter extends
-    RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class SupportAnnotatedAdapter
+    extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-  private static RecyclerDelegators delgators;
+  private static SupportRecyclerDelegators delgators;
 
-  private RecyclerAdapterDelegator adapterDelegator;
+  private SupportRecyclerAdapterDelegator adapterDelegator;
 
   protected LayoutInflater inflater;
 
@@ -33,14 +33,14 @@ public abstract class SupportAnnotatedAdapter extends
   }
 
   @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-    return adapterDelegator.onCreateViewHolder(viewGroup, i);
+    return adapterDelegator.onCreateViewHolder(this, viewGroup, i);
   }
 
   @Override public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-    adapterDelegator.onBindViewHolder(viewHolder, i);
+    adapterDelegator.onBindViewHolder(this, viewHolder, i);
   }
 
-  public LayoutInflater getInflater(){
+  public LayoutInflater getInflater() {
     return inflater;
   }
 }

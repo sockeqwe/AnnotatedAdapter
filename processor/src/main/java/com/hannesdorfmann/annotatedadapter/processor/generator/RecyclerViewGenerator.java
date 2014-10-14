@@ -1,12 +1,11 @@
 package com.hannesdorfmann.annotatedadapter.processor.generator;
 
-import android.support.v7.widget.RecyclerView;
 import com.hannesdorfmann.annotatedadapter.annotation.Field;
 import com.hannesdorfmann.annotatedadapter.processor.AdapterInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeInfo;
+import com.hannesdorfmann.annotatedadapter.processor.ViewTypeSearcher;
 import com.hannesdorfmann.annotatedadapter.processor.util.TypeHelper;
-import com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter;
-import com.hannesdorfmann.annotatedadapter.recyclerview.RecyclerAdapterDelegator;
+import com.hannesdorfmann.annotatedadapter.recyclerview.SupportRecyclerAdapterDelegator;
 import com.squareup.javawriter.JavaWriter;
 import dagger.ObjectGraph;
 import java.io.IOException;
@@ -23,6 +22,8 @@ import javax.tools.JavaFileObject;
  * @author Hannes Dorfmann
  */
 public class RecyclerViewGenerator implements CodeGenerator {
+
+  private static String VIEW_HOLDER = "android.support.v7.widget.RecyclerView.ViewHolder";
 
   private AdapterInfo info;
   @Inject Filer filer;
@@ -41,7 +42,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     String packageName = typeHelper.getPackageName(info.getAdapterClass());
     String delegatorClassName = info.getAdapterDelegatorClassName();
-    String delegatorBinderName = packageName + delegatorClassName;
+    String delegatorBinderName = packageName + "." + delegatorClassName;
 
     //
     // Write code
@@ -55,12 +56,14 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.emitEmptyLine();
     jw.emitJavadoc("Generated class by AnnotatedAdapter . Do not modify this code!");
     jw.beginType(delegatorClassName, "class", EnumSet.of(Modifier.PUBLIC), null,
-        RecyclerAdapterDelegator.class.getCanonicalName());
+        SupportRecyclerAdapterDelegator.class.getCanonicalName());
+    jw.emitEmptyLine();
     jw.emitEmptyLine();
 
     // Check binder interface implemented
     jw.beginMethod("void", "checkBinderInterfaceImplemented", EnumSet.of(Modifier.PUBLIC),
-        SupportAnnotatedAdapter.class.getCanonicalName(), "adapter");
+        ViewTypeSearcher.SUPPORT_RECYCLER_ADAPTER, "adapter");
+    jw.emitEmptyLine();
     jw.beginControlFlow("if (!(adapter instanceof %s)) ", info.getBinderClassName());
     jw.emitStatement(
         "throw new java.lang.RuntimeException(\"The adapter class %s must implement the binder interface %s \")",
@@ -73,11 +76,15 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.emitStatement("return %d", info.getViewTypes().size());
     jw.endMethod();
 
-    // onCreateViewHolder
-    jw.beginMethod(RecyclerView.ViewHolder.class.getCanonicalName(), "onCreateViewHolder",
-        EnumSet.of(Modifier.PUBLIC), "android.view.ViewGroup", "viewGroup", "int", "viewType",
-        SupportAnnotatedAdapter.class.getCanonicalName(), "adapter");
+    jw.emitEmptyLine();
+    jw.emitEmptyLine();
 
+    // onCreateViewHolder
+    jw.beginMethod(VIEW_HOLDER, "onCreateViewHolder", EnumSet.of(Modifier.PUBLIC),
+        ViewTypeSearcher.SUPPORT_RECYCLER_ADAPTER, "adapter", "android.view.ViewGroup", "viewGroup",
+        "int", "viewType");
+
+    jw.emitEmptyLine();
     jw.emitStatement("%s ad = (%s) adapter", info.getAdapterClass(), info.getAdapterClass());
     jw.emitEmptyLine();
 
@@ -96,17 +103,21 @@ public class RecyclerViewGenerator implements CodeGenerator {
         "throw new java.lang.IllegalArgumentException(\"Unknown view type \"+viewType)");
     jw.endMethod();
 
+    jw.emitEmptyLine();
+    jw.emitEmptyLine();
+
     // onBindViewHolder
     jw.beginMethod("void", "onBindViewHolder", EnumSet.of(Modifier.PUBLIC),
-        "android.support.v7.widget.RecyclerView.ViewHolder", "vh", "int", "position");
+        ViewTypeSearcher.SUPPORT_RECYCLER_ADAPTER, "adapter", VIEW_HOLDER, "vh", "int", "position");
 
+    jw.emitEmptyLine();
     jw.emitStatement("%s binder = (%s) adapter", info.getBinderClassName(),
         info.getBinderClassName());
 
     ifs = 0;
     for (ViewTypeInfo vt : info.getViewTypes()) {
-      jw.beginControlFlow((ifs > 0 ? "else " : "") + "if (viewType instanceof %s)",
-          vt.getViewHolderClassName());
+      jw.beginControlFlow((ifs > 0 ? "else " : "") + "if (vh instanceof %s.%s)",
+          info.getViewHoldersClassName(), vt.getViewHolderClassName());
 
       StringBuilder builder = new StringBuilder("binder.");
       builder.append(vt.getBinderMethodName());
@@ -126,7 +137,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
     }
 
     jw.emitStatement("throw new java.lang.IllegalArgumentException("
-            + "\"Binder method not found for unknown viewholder class\"+vh.class.getCanonicalName())");
+        + "\"Binder method not found for unknown viewholder class\"+vh.class.getCanonicalName())");
 
     jw.endMethod();
 
@@ -134,7 +145,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.close();
   }
 
-    private void generateBinderInterface() throws IOException {
+  private void generateBinderInterface() throws IOException {
 
     if (info.getViewTypes().isEmpty()) {
       return;
@@ -142,7 +153,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     String packageName = typeHelper.getPackageName(info.getAdapterClass());
     String binderClassName = info.getBinderClassName();
-    String qualifiedBinderName = packageName + binderClassName;
+    String qualifiedBinderName = packageName + "." + binderClassName;
 
     //
     // Write code
@@ -191,7 +202,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     String packageName = typeHelper.getPackageName(info.getAdapterClass());
     String holdersClassName = info.getViewHoldersClassName();
-    String qualifiedHoldersName = packageName + holdersClassName;
+    String qualifiedHoldersName = packageName + "." + holdersClassName;
 
     //
     // Write code
@@ -214,7 +225,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.emitEmptyLine();
 
     for (ViewTypeInfo v : info.getViewTypes()) {
-      jw.beginType(v.getViewHolderClassName(), "class", EnumSet.of(Modifier.PUBLIC));
+      jw.beginType(v.getViewHolderClassName(), "class", EnumSet.of(Modifier.PUBLIC), VIEW_HOLDER);
       jw.emitEmptyLine();
 
       // Insert fields
@@ -227,6 +238,9 @@ public class RecyclerViewGenerator implements CodeGenerator {
       }
 
       jw.beginConstructor(EnumSet.of(Modifier.PUBLIC), "android.view.View", "view");
+      jw.emitEmptyLine();
+      jw.emitStatement("super(view)");
+      jw.emitEmptyLine();
       for (Field f : v.getFields()) {
         jw.emitStatement("%s = (%s) view.findViewById(%d)", f.name(), f.type().getCanonicalName(),
             f.id());
@@ -235,6 +249,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
       jw.endType();
 
       jw.emitEmptyLine();
+      jw.emitEmptyLine();
     }
 
     jw.endType(); // End of holders class
@@ -242,8 +257,8 @@ public class RecyclerViewGenerator implements CodeGenerator {
   }
 
   @Override public void generateCode() throws IOException {
-    generateBinderInterface();
     generateViewHolders();
+    generateBinderInterface();
     generateAdapterHelper();
   }
 }

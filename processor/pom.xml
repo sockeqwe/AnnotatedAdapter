@@ -5,7 +5,7 @@
   <parent>
     <artifactId>parent</artifactId>
     <groupId>com.hannesdorfmann.annotatedadapter</groupId>
-    <version>0.1.12-SNAPSHOT</version>
+    <version>0.1.19-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -44,6 +44,12 @@
       <artifactId>dagger-compiler</artifactId>
       <version>${dagger.version}</version>
       <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>com.squareup</groupId>
+      <artifactId>javawriter</artifactId>
+      <version>2.5.0</version>
     </dependency>
   </dependencies>
 
