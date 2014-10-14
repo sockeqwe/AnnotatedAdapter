@@ -6,8 +6,6 @@ import com.hannesdorfmann.annotatedadapter.processor.generator.CodeGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.generator.RecyclerViewGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.util.AnnotatedAdapterModule;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
-import com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter;
-import com.hannesdorfmann.annotatedadapter.recyclerview.SupportRecyclerAdapterDelegator;
 import com.hannesdorfmann.annotatedadapter.recyclerview.SupportRecyclerDelegators;
 import com.squareup.javawriter.JavaWriter;
 import dagger.ObjectGraph;
@@ -166,12 +164,17 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
 
     // Class things
     jw.emitPackage(SupportRecyclerDelegators.AUTO_GENERATOR_PACKAGE);
+    jw.emitImports(
+        "com.hannesdorfmann.annotatedadapter.recyclerview.SupportRecyclerAdapterDelegator",
+        "com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter"
+    );
+
     jw.emitJavadoc("Generated class by AnnotatedAdapter . Do not modify this code!");
     jw.beginType(SupportRecyclerDelegators.AUTO_GENERATOR_CLASS_NAME, "class",
         EnumSet.of(Modifier.PUBLIC), null, SupportRecyclerDelegators.class.getCanonicalName());
 
-    jw.beginMethod(SupportRecyclerAdapterDelegator.class.getCanonicalName(), "getDelegator",
-        EnumSet.of(Modifier.PUBLIC), SupportAnnotatedAdapter.class.getCanonicalName(), "adapter");
+    jw.beginMethod("SupportRecyclerAdapterDelegator", "getDelegator",
+        EnumSet.of(Modifier.PUBLIC), "SupportAnnotatedAdapter", "adapter");
 
     jw.emitEmptyLine();
     jw.emitStatement("String name = adapter.class.getCanonicalName()");
