@@ -10,7 +10,7 @@ import javax.lang.model.element.TypeElement;
 public class AdapterInfo {
 
   public enum AdapterType {
-    RECYCLER_VIEW, LIST_VIEW
+    SUPPORT_RECYCLER_VIEW, LIST_VIEW
   }
 
   private static final String HOLDERS_SUFFIX = "Holders";
@@ -48,6 +48,14 @@ public class AdapterInfo {
 
   public String getAdapterDelegatorClassName() {
     return adapterClass.getSimpleName() + DELEGATOR_SUFFIX;
+  }
+
+  public String getQualifiedAdapterDelegatorClassName(){
+    return getQualifiedAdapterClassName()+DELEGATOR_SUFFIX;
+  }
+
+  public String getQualifiedAdapterClassName(){
+    return adapterClass.asType().toString();
   }
 
   public String getAdapterClassName(){

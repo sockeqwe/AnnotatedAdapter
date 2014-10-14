@@ -6,13 +6,22 @@ import com.hannesdorfmann.annotatedadapter.processor.generator.CodeGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.generator.RecyclerViewGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.util.AnnotatedAdapterModule;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
+import com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter;
+import com.hannesdorfmann.annotatedadapter.recyclerview.SupportRecyclerAdapterDelegator;
+import com.hannesdorfmann.annotatedadapter.recyclerview.SupportRecyclerDelegators;
+import com.squareup.javawriter.JavaWriter;
 import dagger.ObjectGraph;
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -23,10 +32,12 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.inject.Inject;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
@@ -104,16 +115,19 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
       viewTypeSearcher.addElementIfNotAlready(element);
     }
 
+    List<AdapterInfo> recyclerApapters = new ArrayList<AdapterInfo>();
+
     // Code generators
     try {
       for (AdapterInfo adapterInfo : viewTypeSearcher.getAdapterInfos()) {
 
         if (adapterInfo.generatesCode()) {
 
-          if (adapterInfo.getAdapterType() == AdapterInfo.AdapterType.RECYCLER_VIEW) {
+          if (adapterInfo.getAdapterType() == AdapterInfo.AdapterType.SUPPORT_RECYCLER_VIEW) {
 
             CodeGenerator codeGen = new RecyclerViewGenerator(objectGraph, adapterInfo);
             codeGen.generateCode();
+            recyclerApapters.add(adapterInfo);
           } else {
             // TODO listview generator
           }
@@ -121,9 +135,59 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      // TODO logger
+      logger.error(null, "An error has occurred while generating adapters code! See stacktrace!");
     }
 
+    // Generate adapter delegators
+    if (!recyclerApapters.isEmpty()) {
+      try {
+        generateSupportRecyclerDelegators(recyclerApapters);
+      } catch (IOException excpetion) {
+        excpetion.printStackTrace();
+        logger.error(recyclerApapters.get(0).getAdapterClass(),
+            "An error has occurred while generating AutoAdapterDelegator: %s",
+            excpetion.getMessage());
+      }
+    }
     return false;
+  }
+
+  private void generateSupportRecyclerDelegators(List<AdapterInfo> adapters) throws IOException {
+
+    if (adapters.isEmpty()) {
+      return;
+    }
+
+    Element element = adapters.get(0).getAdapterClass();
+    JavaFileObject jfo =
+        filer.createSourceFile(SupportRecyclerDelegators.AUTO_GENERATOR_QUALIFIED_NAME, element);
+    Writer writer = jfo.openWriter();
+    JavaWriter jw = new JavaWriter(writer);
+
+    // Class things
+    jw.emitPackage(SupportRecyclerDelegators.AUTO_GENERATOR_PACKAGE);
+    jw.emitJavadoc("Generated class by AnnotatedAdapter . Do not modify this code!");
+    jw.beginType(SupportRecyclerDelegators.AUTO_GENERATOR_CLASS_NAME, "class",
+        EnumSet.of(Modifier.PUBLIC), null, SupportRecyclerDelegators.class.getCanonicalName());
+
+    jw.beginMethod(SupportRecyclerAdapterDelegator.class.getCanonicalName(), "getDelegator",
+        EnumSet.of(Modifier.PUBLIC), SupportAnnotatedAdapter.class.getCanonicalName(), "adapter");
+
+    jw.emitEmptyLine();
+    jw.emitStatement("String name = adapter.class.getCanonicalName()");
+    jw.emitEmptyLine();
+
+    for (AdapterInfo info : adapters) {
+      jw.beginControlFlow("if (name.equals(\"%s\")", info.getQualifiedAdapterClassName());
+      jw.emitStatement("return new %s()", info.getQualifiedAdapterDelegatorClassName());
+      jw.endControlFlow();
+      jw.emitEmptyLine();
+    }
+
+    jw.emitStatement("throw new RuntimeException(\"Could not find adapter delegate for \" + adapter)");
+    jw.endMethod();
+    jw.emitEmptyLine();
+
+    jw.close();
   }
 }

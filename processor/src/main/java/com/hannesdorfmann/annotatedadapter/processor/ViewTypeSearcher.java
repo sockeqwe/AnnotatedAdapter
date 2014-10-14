@@ -149,7 +149,7 @@ public class ViewTypeSearcher {
     TypeElement recyclerAdapter =
         elementUtils.getTypeElement(SUPPORT_RECYCLER_ADAPTER);
     if (typeUtils.isSubtype(adapterClass.asType(), recyclerAdapter.asType())) {
-      return AdapterInfo.AdapterType.RECYCLER_VIEW;
+      return AdapterInfo.AdapterType.SUPPORT_RECYCLER_VIEW;
     }
 
     TypeElement listAdapter = elementUtils.getTypeElement("android.widget.Adapter"); // TODO adapter

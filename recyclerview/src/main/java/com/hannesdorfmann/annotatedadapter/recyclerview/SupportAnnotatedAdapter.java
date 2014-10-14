@@ -23,10 +23,21 @@ public abstract class SupportAnnotatedAdapter
     inflater = LayoutInflater.from(context);
 
     if (delgators == null) {
-      // TODO Class.forName() generated delegators
+      try {
+        Class<?> autoClass = Class.forName(SupportRecyclerDelegators.AUTO_GENERATOR_QUALIFIED_NAME);
+        delgators = (SupportRecyclerDelegators) autoClass.newInstance();
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw new RuntimeException(
+            "Could not load " + SupportRecyclerDelegators.AUTO_GENERATOR_QUALIFIED_NAME);
+      }
     }
 
     adapterDelegator = delgators.getDelegator(this);
+
+    if(adapterDelegator == null) {
+      throw new RuntimeException("Could not load the AdapterDelegator!");
+    }
 
     // Will throw a runtime exception if the required binder has not been implemented
     adapterDelegator.checkBinderInterfaceImplemented(this);
