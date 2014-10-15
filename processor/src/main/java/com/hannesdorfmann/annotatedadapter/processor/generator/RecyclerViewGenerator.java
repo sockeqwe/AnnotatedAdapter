@@ -230,7 +230,8 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.emitEmptyLine();
 
     for (ViewTypeInfo v : info.getViewTypes()) {
-      jw.beginType(v.getViewHolderClassName(), "class", EnumSet.of(Modifier.PUBLIC), VIEW_HOLDER);
+      jw.beginType(v.getViewHolderClassName(), "class",
+          EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), VIEW_HOLDER);
       jw.emitEmptyLine();
 
       // Insert fields
