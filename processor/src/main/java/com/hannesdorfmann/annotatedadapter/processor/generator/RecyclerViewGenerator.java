@@ -94,11 +94,13 @@ public class RecyclerViewGenerator implements CodeGenerator {
       jw.beginControlFlow((ifs > 0 ? "else " : "") + "if (viewType == ad.%s)", vt.getFieldName());
       jw.emitStatement("android.view.View v = ad.getInflater().inflate(%d, viewGroup, false)",
           vt.getLayoutRes());
+      jw.emitStatement("return new %s.%s(v)", info.getViewHoldersClassName(),
+          vt.getViewHolderClassName());
       jw.endControlFlow();
+      jw.emitEmptyLine();
       ifs++;
     }
 
-    jw.emitEmptyLine();
     jw.emitStatement(
         "throw new java.lang.IllegalArgumentException(\"Unknown view type \"+viewType)");
     jw.endMethod();

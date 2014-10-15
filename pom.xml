@@ -19,7 +19,7 @@
 
   <groupId>com.hannesdorfmann.annotatedadapter</groupId>
   <artifactId>parent</artifactId>
-  <version>0.1.30-SNAPSHOT</version>
+  <version>0.1.31-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>AnnotatedAdapter Parent</name>
