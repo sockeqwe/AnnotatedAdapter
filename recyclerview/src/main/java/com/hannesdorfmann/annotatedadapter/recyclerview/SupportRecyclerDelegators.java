@@ -5,7 +5,7 @@ package com.hannesdorfmann.annotatedadapter.recyclerview;
  */
 public interface SupportRecyclerDelegators {
 
-  public static final String AUTO_GENERATOR_PACKAGE ="com.hannesdorfmann.annotatedAdapter";
+  public static final String AUTO_GENERATOR_PACKAGE ="com.hannesdorfmann.annotatedadapter";
 
   public static final String AUTO_GENERATOR_CLASS_NAME = "AutoSupportDelegators";
 
