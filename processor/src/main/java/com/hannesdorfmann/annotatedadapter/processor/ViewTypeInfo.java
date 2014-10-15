@@ -41,6 +41,7 @@ public class ViewTypeInfo {
     return annotation.fields();
   }
 
+  /*
   public Class<?> getModelClass() {
     if (annotation.model().length == 0) {
       return null;
@@ -56,6 +57,7 @@ public class ViewTypeInfo {
   public boolean hasModelClass() {
     return getModelClass() != null;
   }
+  */
 
   public int getLayoutRes() {
     return annotation.layout();

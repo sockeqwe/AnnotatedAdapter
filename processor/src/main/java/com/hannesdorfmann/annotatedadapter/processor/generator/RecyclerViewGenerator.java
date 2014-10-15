@@ -128,11 +128,13 @@ public class RecyclerViewGenerator implements CodeGenerator {
       builder.append(".");
       builder.append(vt.getViewHolderClassName());
       builder.append(") vh, position");
+     /*
       if (vt.hasModelClass()) {
         builder.append(", (");
         builder.append(vt.getQualifiedModelClass());
         builder.append(") getItem(position)");
       }
+      */
       builder.append(")");
 
       jw.emitStatement(builder.toString());
@@ -182,12 +184,12 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
       params.add("int");
       params.add("position");
-
+/*
       if (vt.hasModelClass()) {
         params.add(vt.getQualifiedModelClass());
         params.add("model");
       }
-
+*/
       jw.beginMethod("void", vt.getBinderMethodName(), EnumSet.of(Modifier.PUBLIC), params,
           new ArrayList<String>());
 

@@ -25,9 +25,10 @@ public @interface ViewType {
    */
   Field[] fields() default { };
 
-  /**
+  /*
    * By providing a model the data will automatically be casted into this one and passed as
    * parameter into the corresponding binder interface. Only one model class is allowed.
-   */
+   ≈
   Class<?>[] model() default { };
+  */
 }

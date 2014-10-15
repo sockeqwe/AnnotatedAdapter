@@ -128,7 +128,7 @@ public class ViewTypeSearcher {
   }
 
   private boolean isValidAnnotation(Element element, ViewType annotation) {
-
+  /*
     if (annotation.model().length > 1) {
       logger.error(element,
           "The field %s in %s annotated with @%s has specified a more than one model. Please specify exactly one model or don't set this annotation",
@@ -136,6 +136,7 @@ public class ViewTypeSearcher {
       return false;
     }
 
+*/
     return true;
   }
 
