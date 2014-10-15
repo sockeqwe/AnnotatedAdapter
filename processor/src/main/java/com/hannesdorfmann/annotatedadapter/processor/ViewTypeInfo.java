@@ -2,6 +2,8 @@ package com.hannesdorfmann.annotatedadapter.processor;
 
 import com.hannesdorfmann.annotatedadapter.annotation.Field;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
+import java.util.ArrayList;
+import java.util.List;
 import javax.lang.model.element.Element;
 
 /**
@@ -16,10 +18,15 @@ public class ViewTypeInfo {
 
   private Element field;
   private ViewType annotation;
+  private List<FieldInfo> fieldInfos = new ArrayList<FieldInfo>(6);
 
   public ViewTypeInfo(Element field, ViewType annotation) {
     this.field = field;
     this.annotation = annotation;
+
+    for (Field f : annotation.fields()) {
+      fieldInfos.add(new FieldInfo(f));
+    }
   }
 
   public String getFieldName() {
@@ -37,8 +44,8 @@ public class ViewTypeInfo {
     return METHOD_PREFIX + getViewHolderClassName();
   }
 
-  public Field[] getFields() {
-    return annotation.fields();
+  public List<FieldInfo> getFields() {
+    return fieldInfos;
   }
 
   /*
