@@ -20,8 +20,8 @@ repositories {
 }
 
 dependencies {
-	compile 'com.hannesdorfmann.fragmentargs:annotation:0.5.0-SNAPSHOT'
-	apt 'com.hannesdorfmann.fragmentargs:processor:0.5.0-SNAPSHOT'
+	compile 'com.hannesdorfmann.annotatedadapter:annotation:0.5.0-SNAPSHOT'
+	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'
 }
 ```
 
