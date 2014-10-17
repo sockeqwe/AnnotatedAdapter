@@ -72,6 +72,10 @@ public class AdapterInfo {
     return adapterClass.asType().toString();
   }
 
+  public String getQualifiedViewHoldersClassName(){
+    return getQualifiedAdapterClassName()+ HOLDERS_SUFFIX;
+  }
+
   public String getQualifiedBinderClassName() {
     return getQualifiedAdapterClassName() + BINDER_SUFFIX;
   }

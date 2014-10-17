@@ -187,6 +187,9 @@ public class RecyclerViewGenerator implements CodeGenerator {
     JavaWriter jw = new JavaWriter(writer);
 
     jw.emitPackage(packageName);
+
+    jw.emitStaticImports(info.getQualifiedViewHoldersClassName() + ".*");
+
     jw.emitJavadoc("Generated class by AnnotatedAdapter . Do not modify this code!");
 
     AdapterInfo superAnnotatedAdapter = info.getAnnotatedAdapterSuperClass(adaptersMap);
@@ -202,7 +205,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
       jw.emitEmptyLine();
       List<String> params = new ArrayList(6);
 
-      params.add(info.getViewHoldersClassName() + "." + vt.getViewHolderClassName());
+      params.add(vt.getViewHolderClassName());
       params.add("vh");
 
       params.add("int");
