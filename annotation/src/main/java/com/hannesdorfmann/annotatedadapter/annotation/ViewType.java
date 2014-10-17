@@ -25,6 +25,13 @@ public @interface ViewType {
    */
   Field[] fields() default { };
 
+  /**
+   * Should a init method be generated for this view holder (part of the binder interface) whrere
+   * you can initialize the new created viewholder by setting view properties by hand (rather than
+   * in xml layout)
+   */
+  boolean initMethod() default false;
+
   /*
    * By providing a model the data will automatically be casted into this one and passed as
    * parameter into the corresponding binder interface. Only one model class is allowed.

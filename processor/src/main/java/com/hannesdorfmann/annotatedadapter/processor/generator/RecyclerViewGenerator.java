@@ -107,8 +107,14 @@ public class RecyclerViewGenerator implements CodeGenerator {
       jw.beginControlFlow((ifs > 0 ? "else " : "") + "if (viewType == ad.%s)", vt.getFieldName());
       jw.emitStatement("android.view.View v = ad.getInflater().inflate(%d, viewGroup, false)",
           vt.getLayoutRes());
-      jw.emitStatement("return new %s.%s(v)", info.getViewHoldersClassName(),
-          vt.getViewHolderClassName());
+      jw.emitStatement("%s.%s vh = new %s.%s(v)", info.getViewHoldersClassName(),
+          vt.getViewHolderClassName(), info.getViewHoldersClassName(), vt.getViewHolderClassName());
+      if (vt.hasViewHolderInitMethod()) {
+        jw.emitStatement("%s binder = (%s) adapter", info.getBinderClassName(),
+            info.getBinderClassName());
+        jw.emitStatement("binder.%s(vh, v)", vt.getInitMethodName());
+      }
+      jw.emitStatement("return vh");
       jw.endControlFlow();
       jw.emitEmptyLine();
       ifs++;
@@ -202,6 +208,15 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.emitEmptyLine();
 
     for (ViewTypeInfo vt : info.getViewTypes()) {
+
+      if (vt.hasViewHolderInitMethod()) {
+        // Generate the init method
+        jw.emitEmptyLine();
+        jw.beginMethod("void", vt.getInitMethodName(), EnumSet.of(Modifier.PUBLIC),
+            vt.getViewHolderClassName(), "vh", "android.view.View", "view");
+        jw.endMethod();
+      }
+
       jw.emitEmptyLine();
       List<String> params = new ArrayList(6);
 

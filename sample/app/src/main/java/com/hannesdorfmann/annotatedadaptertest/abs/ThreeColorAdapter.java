@@ -1,6 +1,8 @@
 package com.hannesdorfmann.annotatedadaptertest.abs;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.view.View;
 import android.widget.TextView;
 import com.hannesdorfmann.annotatedadapter.annotation.Field;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
@@ -14,6 +16,7 @@ public class ThreeColorAdapter extends DualColorAdapter implements ThreeColorAda
 
   @ViewType(
       layout = R.layout.row_small,
+      initMethod = true,
       fields = @Field(id = R.id.textView, name = "text", type = TextView.class))
   public final int redRow = 3;
 
@@ -37,6 +40,12 @@ public class ThreeColorAdapter extends DualColorAdapter implements ThreeColorAda
 
   @Override public void bindRedRowViewHolder(ThreeColorAdapterHolders.RedRowViewHolder vh,
       int position) {
-    
+
+    String str = items.get(position);
+    vh.text.setText(str);
+  }
+
+  @Override public void initViewHolder(ThreeColorAdapterHolders.RedRowViewHolder vh, View view) {
+    vh.text.setTextColor(Color.RED);
   }
 }
