@@ -5,9 +5,7 @@ import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
 import com.hannesdorfmann.annotatedadapter.processor.util.TypeHelper;
 import dagger.ObjectGraph;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.lang.model.element.Element;
@@ -26,33 +24,44 @@ import javax.lang.model.util.Types;
  */
 public class ViewTypeSearcher {
 
-  public static final String SUPPORT_RECYCLER_ADAPTER = "com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter";
-
+  public static final String SUPPORT_RECYCLER_ADAPTER =
+      "com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter";
 
   @Inject ProcessorMessage logger;
   @Inject TypeHelper typeHelper;
   @Inject Elements elementUtils;
   @Inject Types typeUtils;
+
+  private ObjectGraph graph;
+
   /**
    * Maps the
    */
-  private Map<String, TypeElement> classMap = new LinkedHashMap<String, TypeElement>();
+  private Map<String, AdapterInfo> classMap = new LinkedHashMap<String, AdapterInfo>();
 
   public ViewTypeSearcher(ObjectGraph graph) {
+    this.graph = graph;
     graph.inject(this);
   }
 
-  public void addElementIfNotAlready(Element field) {
+  public void addElement(Element field, ViewType annotation) {
+
+    if (!isValidAnnotation(field, annotation)) {
+      return;
+    }
 
     if (isValidField(field) && isFieldInValidClass((VariableElement) field)) {
-      Element surroundingClass = field.getEnclosingElement();
-      if (surroundingClass.getModifiers().contains(Modifier.ABSTRACT)) {
-        return; // Skip abstract classes
-      }
+
+      TypeElement surroundingClass = (TypeElement) field.getEnclosingElement();
+      AdapterInfo.AdapterType adapterType = isValidAdapterClass(surroundingClass);
+
       String className = surroundingClass.asType().toString();
-      if (classMap.get(className) == null) {
-        classMap.put(className, (TypeElement) surroundingClass);
+      AdapterInfo adapterInfo = classMap.get(className);
+      if (adapterInfo == null) {
+        adapterInfo = new AdapterInfo(graph, surroundingClass, adapterType);
+        classMap.put(className, adapterInfo);
       }
+      adapterInfo.addViewTypeInfo(new ViewTypeInfo(field, annotation));
     }
   }
 
@@ -74,8 +83,7 @@ public class ViewTypeSearcher {
       return true;
     }
 
-    if (typeHelper.isOfType(field.getEnclosingElement(),
-        SUPPORT_RECYCLER_ADAPTER)) {
+    if (typeHelper.isOfType(field.getEnclosingElement(), SUPPORT_RECYCLER_ADAPTER)) {
       return true;
     }
 
@@ -128,6 +136,11 @@ public class ViewTypeSearcher {
   }
 
   private boolean isValidAnnotation(Element element, ViewType annotation) {
+
+    if (annotation == null) { // Should never be the case --> useless check
+      logger.error(element, "The annotation is null");
+      return false;
+    }
   /*
     if (annotation.model().length > 1) {
       logger.error(element,
@@ -147,8 +160,7 @@ public class ViewTypeSearcher {
    */
   private AdapterInfo.AdapterType isValidAdapterClass(TypeElement adapterClass) {
 
-    TypeElement recyclerAdapter =
-        elementUtils.getTypeElement(SUPPORT_RECYCLER_ADAPTER);
+    TypeElement recyclerAdapter = elementUtils.getTypeElement(SUPPORT_RECYCLER_ADAPTER);
     if (typeUtils.isSubtype(adapterClass.asType(), recyclerAdapter.asType())) {
       return AdapterInfo.AdapterType.SUPPORT_RECYCLER_VIEW;
     }
@@ -161,7 +173,7 @@ public class ViewTypeSearcher {
     logger.error(adapterClass, "The class %s contains @%s annotations but is not a subclass of "
             + "%s nor %s. "
             + "Make %s extends one of those adapter classes", adapterClass.getSimpleName(),
-        ViewType.class.getSimpleName(),SUPPORT_RECYCLER_ADAPTER,
+        ViewType.class.getSimpleName(), SUPPORT_RECYCLER_ADAPTER,
         AbsListViewAnnotatedAdapter.class.getCanonicalName(), adapterClass.getSimpleName());
 
     return null;
@@ -170,27 +182,7 @@ public class ViewTypeSearcher {
   /**
    * Get all the classes that have annoatated fields
    */
-  public List<AdapterInfo> getAdapterInfos() {
-
-    List<AdapterInfo> adapterInfos = new ArrayList<AdapterInfo>();
-
-    for (TypeElement element : classMap.values()) {
-
-      AdapterInfo.AdapterType adapterType = isValidAdapterClass(element);
-
-      AdapterInfo adapterInfo = new AdapterInfo(element, adapterType);
-      adapterInfos.add(adapterInfo);
-
-      for (Element field : elementUtils.getAllMembers(element)) {
-        if (field.getKind().isField()) {
-          ViewType annotation = field.getAnnotation(ViewType.class);
-          if (annotation != null && isValidAnnotation(field, annotation)) {
-            adapterInfo.addViewTypeInfo(new ViewTypeInfo(field, annotation));
-          }
-        }
-      }
-    }
-
-    return adapterInfos;
+  public Map<String, AdapterInfo> getAdapterInfos() {
+    return classMap;
   }
 }

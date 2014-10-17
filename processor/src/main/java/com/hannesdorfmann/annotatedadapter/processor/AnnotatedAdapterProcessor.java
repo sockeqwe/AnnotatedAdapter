@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -110,25 +111,24 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     // Search for annotated fields
     ViewTypeSearcher viewTypeSearcher = new ViewTypeSearcher(objectGraph);
     for (Element element : roundEnv.getElementsAnnotatedWith(ViewType.class)) {
-      viewTypeSearcher.addElementIfNotAlready(element);
+      ViewType annotation = element.getAnnotation(ViewType.class);
+      viewTypeSearcher.addElement(element, annotation);
     }
 
     List<AdapterInfo> recyclerApapters = new ArrayList<AdapterInfo>();
 
     // Code generators
     try {
-      for (AdapterInfo adapterInfo : viewTypeSearcher.getAdapterInfos()) {
+      // Map of qualified adapter class name -> AdapterInfo
+      Map<String, AdapterInfo> adapters = viewTypeSearcher.getAdapterInfos();
+      for (AdapterInfo adapterInfo : adapters.values()) {
 
-        if (adapterInfo.generatesCode()) {
-
-          if (adapterInfo.getAdapterType() == AdapterInfo.AdapterType.SUPPORT_RECYCLER_VIEW) {
-
-            CodeGenerator codeGen = new RecyclerViewGenerator(objectGraph, adapterInfo);
-            codeGen.generateCode();
-            recyclerApapters.add(adapterInfo);
-          } else {
-            // TODO listview generator
-          }
+        if (adapterInfo.getAdapterType() == AdapterInfo.AdapterType.SUPPORT_RECYCLER_VIEW) {
+          CodeGenerator codeGen = new RecyclerViewGenerator(objectGraph, adapterInfo, adapters);
+          codeGen.generateCode();
+          recyclerApapters.add(adapterInfo);
+        } else {
+          // TODO listview generator
         }
       }
     } catch (Exception e) {
@@ -166,15 +166,14 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     jw.emitPackage(SupportRecyclerDelegators.AUTO_GENERATOR_PACKAGE);
     jw.emitImports(
         "com.hannesdorfmann.annotatedadapter.recyclerview.SupportRecyclerAdapterDelegator",
-        "com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter"
-    );
+        "com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter");
 
     jw.emitJavadoc("Generated class by AnnotatedAdapter . Do not modify this code!");
     jw.beginType(SupportRecyclerDelegators.AUTO_GENERATOR_CLASS_NAME, "class",
         EnumSet.of(Modifier.PUBLIC), null, SupportRecyclerDelegators.class.getCanonicalName());
 
-    jw.beginMethod("SupportRecyclerAdapterDelegator", "getDelegator",
-        EnumSet.of(Modifier.PUBLIC), "SupportAnnotatedAdapter", "adapter");
+    jw.beginMethod("SupportRecyclerAdapterDelegator", "getDelegator", EnumSet.of(Modifier.PUBLIC),
+        "SupportAnnotatedAdapter", "adapter");
 
     jw.emitEmptyLine();
     jw.emitStatement("String name = adapter.getClass().getCanonicalName()");
@@ -187,7 +186,8 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
       jw.emitEmptyLine();
     }
 
-    jw.emitStatement("throw new RuntimeException(\"Could not find adapter delegate for \" + adapter)");
+    jw.emitStatement(
+        "throw new RuntimeException(\"Could not find adapter delegate for \" + adapter)");
     jw.endMethod();
     jw.emitEmptyLine();
 

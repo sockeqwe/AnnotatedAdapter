@@ -13,6 +13,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.processing.Filer;
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
@@ -28,17 +29,16 @@ public class RecyclerViewGenerator implements CodeGenerator {
   private AdapterInfo info;
   @Inject Filer filer;
   @Inject TypeHelper typeHelper;
+  private Map<String, AdapterInfo> adaptersMap;
 
-  public RecyclerViewGenerator(ObjectGraph graph, AdapterInfo info) {
+  public RecyclerViewGenerator(ObjectGraph graph, AdapterInfo info,
+      Map<String, AdapterInfo> adaptersMap) {
     this.info = info;
+    this.adaptersMap = adaptersMap;
     graph.inject(this);
   }
 
   private void generateAdapterHelper() throws IOException {
-
-    if (info.getViewTypes().isEmpty()) {
-      return;
-    }
 
     String packageName = typeHelper.getPackageName(info.getAdapterClass());
     String delegatorClassName = info.getAdapterDelegatorClassName();
@@ -55,7 +55,16 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.emitPackage(packageName);
     jw.emitEmptyLine();
     jw.emitJavadoc("Generated class by AnnotatedAdapter . Do not modify this code!");
-    jw.beginType(delegatorClassName, "class", EnumSet.of(Modifier.PUBLIC), null,
+
+    String superAnnotatedAapterDelegatorClassName = null;
+    AdapterInfo superAnnotatedAdaper = info.getAnnotatedAdapterSuperClass(adaptersMap);
+    if (superAnnotatedAdaper != null) {
+      superAnnotatedAapterDelegatorClassName =
+          superAnnotatedAdaper.getQualifiedAdapterDelegatorClassName();
+    }
+
+    jw.beginType(delegatorClassName, "class", EnumSet.of(Modifier.PUBLIC),
+        superAnnotatedAapterDelegatorClassName,
         SupportRecyclerAdapterDelegator.class.getCanonicalName());
     jw.emitEmptyLine();
     jw.emitEmptyLine();
@@ -73,7 +82,11 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     // ViewTypeCount
     jw.beginMethod("int", "getViewTypeCount", EnumSet.of(Modifier.PUBLIC));
-    jw.emitStatement("return %d", info.getViewTypes().size());
+    if (info.hasAnnotatedAdapterSuperClass(adaptersMap)) {
+      jw.emitStatement("return super.getViewTypeCount() + %d", info.getViewTypes().size());
+    } else {
+      jw.emitStatement("return %d", info.getViewTypes().size());
+    }
     jw.endMethod();
 
     jw.emitEmptyLine();
@@ -101,8 +114,12 @@ public class RecyclerViewGenerator implements CodeGenerator {
       ifs++;
     }
 
-    jw.emitStatement(
-        "throw new java.lang.IllegalArgumentException(\"Unknown view type \"+viewType)");
+    if (info.hasAnnotatedAdapterSuperClass(adaptersMap)) {
+      jw.emitStatement("return super.onCreateViewHolder(adapter, viewGroup, viewType)");
+    } else {
+      jw.emitStatement(
+          "throw new java.lang.IllegalArgumentException(\"Unknown view type \"+viewType)");
+    }
     jw.endMethod();
 
     jw.emitEmptyLine();
@@ -143,9 +160,12 @@ public class RecyclerViewGenerator implements CodeGenerator {
       ifs++;
     }
 
-    jw.emitStatement("throw new java.lang.IllegalArgumentException("
-        + "\"Binder method not found for unknown viewholder class \" + vh.toString())");
-
+    if (info.hasAnnotatedAdapterSuperClass(adaptersMap)) {
+      jw.emitStatement("super.onBindViewHolder(adapter, vh, position)");
+    } else {
+      jw.emitStatement("throw new java.lang.IllegalArgumentException("
+          + "\"Binder method not found for unknown viewholder class \" + vh.toString())");
+    }
     jw.endMethod();
 
     jw.endType();
@@ -153,10 +173,6 @@ public class RecyclerViewGenerator implements CodeGenerator {
   }
 
   private void generateBinderInterface() throws IOException {
-
-    if (info.getViewTypes().isEmpty()) {
-      return;
-    }
 
     String packageName = typeHelper.getPackageName(info.getAdapterClass());
     String binderClassName = info.getBinderClassName();
@@ -172,7 +188,14 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     jw.emitPackage(packageName);
     jw.emitJavadoc("Generated class by AnnotatedAdapter . Do not modify this code!");
-    jw.beginType(binderClassName, "interface", EnumSet.of(Modifier.PUBLIC));
+
+    AdapterInfo superAnnotatedAdapter = info.getAnnotatedAdapterSuperClass(adaptersMap);
+    String qualifiedSuperAnnotateAdapterName = null;
+    if (superAnnotatedAdapter != null) {
+      qualifiedSuperAnnotateAdapterName = superAnnotatedAdapter.getQualifiedBinderClassName();
+    }
+    jw.beginType(binderClassName, "interface", EnumSet.of(Modifier.PUBLIC),
+        qualifiedSuperAnnotateAdapterName);
     jw.emitEmptyLine();
 
     for (ViewTypeInfo vt : info.getViewTypes()) {
@@ -202,10 +225,6 @@ public class RecyclerViewGenerator implements CodeGenerator {
   }
 
   private void generateViewHolders() throws IOException {
-
-    if (info.getViewTypes().isEmpty()) {
-      return;
-    }
 
     String packageName = typeHelper.getPackageName(info.getAdapterClass());
     String holdersClassName = info.getViewHoldersClassName();
