@@ -26,13 +26,13 @@ public class DualColorAdapter extends AbsColorAdapter implements DualColorAdapte
     return position % 2 == 0 ? smallRow : mediumRow;
   }
 
-  @Override public void bindMediumRowViewHolder(DualColorAdapterHolders.MediumRowViewHolder vh,
+  @Override public void bindViewHolder(DualColorAdapterHolders.MediumRowViewHolder vh,
       int position) {
     String txt = items.get(position);
     vh.text.setText(txt);
   }
 
-  @Override public void bindSmallRowViewHolder(AbsColorAdapterHolders.SmallRowViewHolder vh,
+  @Override public void bindViewHolder(AbsColorAdapterHolders.SmallRowViewHolder vh,
       int position) {
 
     String txt = items.get(position);

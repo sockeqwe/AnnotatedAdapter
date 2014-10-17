@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author Hannes Dorfmann
  */
-public class SampleAdapter extends SupportAnnotatedAdapter implements SampleAdapterBinder{
+public class SampleAdapter extends SupportAnnotatedAdapter implements SampleAdapterBinder {
 
   @ViewType(
       layout = R.layout.row_medium,
@@ -56,27 +56,20 @@ public class SampleAdapter extends SupportAnnotatedAdapter implements SampleAdap
     }
   }
 
-
-
-  @Override public void bindMediumRowViewHolder(SampleAdapterHolders.MediumRowViewHolder vh,
-      int position) {
+  @Override public void bindViewHolder(SampleAdapterHolders.MediumRowViewHolder vh, int position) {
 
     String str = items.get(position);
     vh.text.setText(str);
   }
 
-  @Override public void bindRowWithPicViewHolder(SampleAdapterHolders.RowWithPicViewHolder vh,
-      int position) {
-
+  @Override public void bindViewHolder(SampleAdapterHolders.RowWithPicViewHolder vh, int position) {
     String str = items.get(position);
     vh.text.setText(str);
     vh.image.setImageResource(R.drawable.ic_launcher);
   }
 
-  @Override public void bindSmallRowViewHolder(SampleAdapterHolders.SmallRowViewHolder vh,
-      int position) {
+  @Override public void bindViewHolder(SampleAdapterHolders.SmallRowViewHolder vh, int position) {
     String str = items.get(position);
     vh.text.setText(str);
   }
-
 }

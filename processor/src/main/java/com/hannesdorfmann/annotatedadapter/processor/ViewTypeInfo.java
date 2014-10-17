@@ -14,7 +14,7 @@ import javax.lang.model.element.Element;
 public class ViewTypeInfo {
 
   private static final String VIEWHOLDER_SUFFIX = "ViewHolder";
-  private static final String BIND_METHOD_PREFIX = "bind";
+  private static final String BIND_METHOD_PREFIX = "bindViewHolder";
   private static final String INIT_METHOD = "initViewHolder";
 
   private Element field;
@@ -42,7 +42,7 @@ public class ViewTypeInfo {
   }
 
   public String getBinderMethodName() {
-    return BIND_METHOD_PREFIX + getViewHolderClassName();
+    return BIND_METHOD_PREFIX;
   }
 
   public String getInitMethodName(){
