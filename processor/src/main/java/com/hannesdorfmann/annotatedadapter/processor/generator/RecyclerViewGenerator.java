@@ -5,7 +5,7 @@ import com.hannesdorfmann.annotatedadapter.processor.FieldInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeSearcher;
 import com.hannesdorfmann.annotatedadapter.processor.util.TypeHelper;
-import com.hannesdorfmann.annotatedadapter.recyclerview.SupportRecyclerAdapterDelegator;
+import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportRecyclerAdapterDelegator;
 import com.squareup.javawriter.JavaWriter;
 import dagger.ObjectGraph;
 import java.io.IOException;

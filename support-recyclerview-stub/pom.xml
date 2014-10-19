@@ -5,33 +5,17 @@
   <parent>
     <artifactId>parent</artifactId>
     <groupId>com.hannesdorfmann.annotatedadapter</groupId>
-    <version>0.5.15-SNAPSHOT</version>
+    <version>0.5.16-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>recyclerview</artifactId>
+  <artifactId>support-recyclerview-stub</artifactId>
 
   <dependencies>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>annotation</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>recyclerview-stub</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
-      <scope>provided</scope>
     </dependency>
-
   </dependencies>
 
 

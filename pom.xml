@@ -6,8 +6,8 @@
   <modules>
     <module>annotation</module>
     <module>processor</module>
-    <module>recyclerview-stub</module>
-    <module>recyclerview</module>
+    <module>support-recyclerview-stub</module>
+    <module>support-recyclerview</module>
   </modules>
 
   <parent>
@@ -19,7 +19,7 @@
 
   <groupId>com.hannesdorfmann.annotatedadapter</groupId>
   <artifactId>parent</artifactId>
-  <version>0.5.15-SNAPSHOT</version>
+  <version>0.5.16-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>AnnotatedAdapter Parent</name>

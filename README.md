@@ -1,5 +1,5 @@
 # AnnotatedAdapter
-Sick of writing ViewHolder classes, inflate xml and distinguis ViewTypes in your adapters?  
+Sick of writing ViewHolder classes, inflate xml and distinguish ViewTypes in your adapters?  
 Write less code with AnnotatedAdapter, an annotation processor for generating `RecyclerView` and `AbsListView` adapters.
 
 # Work in Progress
@@ -10,22 +10,34 @@ Check [GradlePlease](http://gradleplease.appspot.com/#com.hannesdorfmann.annotat
 
 To run annotation processing you need to apply Hugo Visser's awesome [android-apt](https://bitbucket.org/hvisser/android-apt) gradle plugin.
 
+ - For `AbsListView Widgets` like `ListView or `GridView`: 
 ```groovy
-repositories {
-
-  // Maven central snapshot repository
-  maven { 
-    url "https://oss.sonatype.org/content/repositories/snapshots"
-  }
-}
-
 dependencies {
+
 	compile 'com.hannesdorfmann.annotatedadapter:annotation:0.5.0-SNAPSHOT'
+	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'  	
+}
+```
+ - For `RecyclerView` from **support library**
+```groovy
+dependencies {
+
+	compile 'com.hannesdorfmann.annotatedadapter:annotation:0.5.0-SNAPSHOT'
+	compile 'com.hannesdorfmann.annotatedadapter:support-recyclerview:0.5.0-SNAPSHOT'
+	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'
+}
+```
+ - For `RecyclerView` from Android 5.0 and above (**not** support library)
+```groovy
+dependencies {
+
+	compile 'com.hannesdorfmann.annotatedadapter:annotation:0.5.0-SNAPSHOT'
+	compile 'com.hannesdorfmann.annotatedadapter:recyclerview:0.5.0-SNAPSHOT'
 	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'
 }
 ```
 
-# How does it works?
+# Usage
 Check out the sample folder, but basically you have to create an adapter class like this and annotate the viewtypes with `@ViewType` and provide some more information in this annotation:
 
 ```java
@@ -86,7 +98,7 @@ public class SampleAdapter extends SupportAnnotatedAdapter
   /**
    * Bind the data to this view type mediumRow; MediumRowViewHolder was generated
    */
-  @Override public void bindMediumRowViewHolder(SampleAdapterHolders.MediumRowViewHolder vh,
+  @Override public void bindViewHolder(SampleAdapterHolders.MediumRowViewHolder vh,
         int position) {
   
       String str = items.get(position);
@@ -96,7 +108,7 @@ public class SampleAdapter extends SupportAnnotatedAdapter
     /**
      * Bind the data to this view type rowWithPic; RowWithPicViewHolder was generated
      */
-    @Override public void bindRowWithPicViewHolder(SampleAdapterHolders.RowWithPicViewHolder vh,
+    @Override public void bindViewHolder(SampleAdapterHolders.RowWithPicViewHolder vh,
         int position) {
   
       String str = items.get(position);
@@ -141,5 +153,17 @@ Even if there are already some comments in the code shown above, let's review th
    }
    ```
  4. Like in any other adapter you have to specify which view type should be displayed for the given position by overriding `public int getItemViewType(int position)` and you of course you have to say how many items are displayed in the RecyclerView / ListView by overriding `public int getItemCount()`
- 5. An interface will be generated (if adapter class contains at least one `@ViewType`) with the name `AdapterClassName + Binder`. Implement this interface. For each view type you have to implement the corresponding method from this interface where you bind the data to the generated view holder.
+ 5. An interface will be generated (if adapter class contains at least one `@ViewType`) with the name `AdapterClassName + Binder`. Implement this interface. For each view type you have to implement the corresponding method from this interface where you bind the data to the generated view holder. 
+
+
+# Lifecycle and methods call
+Internally views and ViewHolders are created and are recycled like you expect from your own handwritten adapter implementation. Basically the following steps are executed for each cell (view):
+ 1. Call `int viewType = getItemViewType(position)` to determine the view type
+ 2. If there is a cell (view) that can be recycled then continue in step 4.
+ 3. If no cell can be recycled instantiate a new:
+    1. Inflate the xml layout specified in `@ViewType( layout = R.layout.id )`
+    2. Create a new instance of the corresponding ViewHolder class. `findViewById()`will be executed for each `@ViewHolder ( fields = { @Field ( ... ) } )` on the previously inflated layout-view.
+    3. If you want to do additional initialization of the inflated View (like setting the width or height of a subview) in code then you have to set `@ViewHolder( initMethod = true)`. This will force to create a method called `initViewHolder(viewHolderClass, view, parent)` in the Binder interface that you have to implement afterwards.
+ 4. Call `bindViewHolder(viewHolder, position)` to bind the data to the cell (view)
+    
  

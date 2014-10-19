@@ -1,4 +1,4 @@
-package com.hannesdorfmann.annotatedadapter.recyclerview;
+package com.hannesdorfmann.annotatedadapter.support.recyclerview;
 
 /**
  * @author Hannes Dorfmann

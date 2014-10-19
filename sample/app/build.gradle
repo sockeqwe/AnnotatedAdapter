@@ -28,7 +28,7 @@ def adapterVersion = '0.5.15-SNAPSHOT'
 
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
-  compile 'com.hannesdorfmann.annotatedadapter:recyclerview:' + adapterVersion
+  compile 'com.hannesdorfmann.annotatedadapter:support-recyclerview:' + adapterVersion
   apt 'com.hannesdorfmann.annotatedadapter:processor:' + adapterVersion
   compile 'com.jakewharton:butterknife:5.1.2'
 

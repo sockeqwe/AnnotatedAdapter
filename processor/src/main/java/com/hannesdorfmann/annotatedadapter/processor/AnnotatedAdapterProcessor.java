@@ -6,7 +6,7 @@ import com.hannesdorfmann.annotatedadapter.processor.generator.CodeGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.generator.RecyclerViewGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.util.AnnotatedAdapterModule;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
-import com.hannesdorfmann.annotatedadapter.recyclerview.SupportRecyclerDelegators;
+import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportRecyclerDelegators;
 import com.squareup.javawriter.JavaWriter;
 import dagger.ObjectGraph;
 import java.io.File;

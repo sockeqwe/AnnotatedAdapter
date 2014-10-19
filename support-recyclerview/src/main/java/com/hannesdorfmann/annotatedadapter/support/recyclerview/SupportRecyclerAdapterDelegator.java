@@ -1,4 +1,4 @@
-package com.hannesdorfmann.annotatedadapter.recyclerview;
+package com.hannesdorfmann.annotatedadapter.support.recyclerview;
 
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
