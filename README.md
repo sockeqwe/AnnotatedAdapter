@@ -10,7 +10,7 @@ Check [GradlePlease](http://gradleplease.appspot.com/#com.hannesdorfmann.annotat
 
 To run annotation processing you need to apply Hugo Visser's awesome [android-apt](https://bitbucket.org/hvisser/android-apt) gradle plugin.
 
- - For `AbsListView Widgets` like `ListView or `GridView`: 
+ - Use `AbsListAnnotatedAdapter` as base class and the following dependencies for `AbsListView widgets` like `ListView` or `GridView`: 
 ```groovy
 dependencies {
 
@@ -18,7 +18,7 @@ dependencies {
 	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'  	
 }
 ```
- - For `RecyclerView` from **support library**
+ - Use `SupportAnnotatedAdapter` as base class and the following dependencies for `RecyclerView` from **support library**
 ```groovy
 dependencies {
 
@@ -27,7 +27,7 @@ dependencies {
 	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'
 }
 ```
- - For `RecyclerView` from Android 5.0 and above (**not** support library)
+ - Use `AnnotatedAdapter`as base class and the following dependencies for `RecyclerView` from Android 5.0 and above (**not** support library)
 ```groovy
 dependencies {
 
@@ -38,7 +38,7 @@ dependencies {
 ```
 
 # Usage
-Check out the sample folder, but basically you have to create an adapter class like this and annotate the viewtypes with `@ViewType` and provide some more information in this annotation:
+Check out the sample folder, but basically you have to create an adapter class like this and annotate the view types with `@ViewType` and provide some more information in its annotation:
 
 ```java
 public class SampleAdapter extends SupportAnnotatedAdapter 
@@ -153,17 +153,42 @@ Even if there are already some comments in the code shown above, let's review th
    }
    ```
  4. Like in any other adapter you have to specify which view type should be displayed for the given position by overriding `public int getItemViewType(int position)` and you of course you have to say how many items are displayed in the RecyclerView / ListView by overriding `public int getItemCount()`
- 5. An interface will be generated (if adapter class contains at least one `@ViewType`) with the name `AdapterClassName + Binder`. Implement this interface. For each view type you have to implement the corresponding method from this interface where you bind the data to the generated view holder. 
+ 5. An interface will be generated (if adapter class contains at least one `@ViewType`) with the name `AdapterClassName + Binder`. 
+ 6. Make your adapter class implement this interface. For each view type you have to implement the corresponding `bindViewHolder()` method where you bind the data to the generated view holder. 
 
 
 # Lifecycle and methods call
 Internally views and ViewHolders are created and are recycled like you expect from your own handwritten adapter implementation. Basically the following steps are executed for each cell (view):
  1. Call `int viewType = getItemViewType(position)` to determine the view type
  2. If there is a cell (view) that can be recycled then continue in step 4.
- 3. If no cell can be recycled instantiate a new:
+ 3. If no cell (view) can be recycled instantiate a new one:
     1. Inflate the xml layout specified in `@ViewType( layout = R.layout.id )`
-    2. Create a new instance of the corresponding ViewHolder class. `findViewById()`will be executed for each `@ViewHolder ( fields = { @Field ( ... ) } )` on the previously inflated layout-view.
-    3. If you want to do additional initialization of the inflated View (like setting the width or height of a subview) in code then you have to set `@ViewHolder( initMethod = true)`. This will force to create a method called `initViewHolder(viewHolderClass, view, parent)` in the Binder interface that you have to implement afterwards.
+    2. Create a new instance of the corresponding ViewHolder class. `findViewById()`will be used for each field in `@ViewHolder ( fields = { @Field ( ... ) } )`
+    3. If you want to do additional initialization of the inflated View (like setting the width or height of a subview) in code then you have to set `@ViewHolder( initMethod = true)`. This will force to create a method called `initViewHolder(viewHolderClass, view, parent)` in the Binder interface which you have to implement afterwards
  4. Call `bindViewHolder(viewHolder, position)` to bind the data to the cell (view)
-    
  
+# Inheritance
+AnnotatedAdapter supports inheritance. The only thing you have to keep in mind, like for any other handwritten adapter, is that the view holders constant integer value must be unique along the inheritance tree.
+
+Example:
+```java
+public class BaseAdapter extends SupportAnnotatedAdapter implements BaseAdapterHolder {
+
+    @ViewHolder (...)
+    public final int simpleRow = 0;
+
+}
+
+public class OtherAdapter extends BaseAdpter implements BaseAdapterHolder {
+
+    @ViewHolder (...)
+    public final int otherRow = 0;  // Cause problems, because BaseAdapter.simpleRow == 1 && OtherAdapter.otherRow == 1 
+
+}
+```    
+
+In this case are `@ViewType simpleRow = 0` and `@ViewType otherRow = 0` which will cause internal problems on recycling. 
+To avoid this kind of problems AnnotatedAdapter will throw a compile time error that states that there are two view type with the same value `0`.
+However, you can disable this check by setting `@ViewType( checkValue = false )`. Do that only if you have a very good reason.
+Usually it should be enough to override the `bindViewHolder()` method in your subclass instead of setting `@ViewType( checkValue = false )`.
+The only good reason I can see right now to use this feature is to "override" the xml layout that should be inflated. Notice that at this point the subclass @ViewType definition will be used instead of the base class @ViewType definition.

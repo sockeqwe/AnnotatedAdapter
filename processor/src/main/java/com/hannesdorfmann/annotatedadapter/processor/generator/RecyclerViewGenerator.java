@@ -4,6 +4,7 @@ import com.hannesdorfmann.annotatedadapter.processor.AdapterInfo;
 import com.hannesdorfmann.annotatedadapter.processor.FieldInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeSearcher;
+import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
 import com.hannesdorfmann.annotatedadapter.processor.util.TypeHelper;
 import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportRecyclerAdapterDelegator;
 import com.squareup.javawriter.JavaWriter;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Filer;
@@ -29,6 +31,8 @@ public class RecyclerViewGenerator implements CodeGenerator {
   private AdapterInfo info;
   @Inject Filer filer;
   @Inject TypeHelper typeHelper;
+  @Inject ProcessorMessage logger;
+
   private Map<String, AdapterInfo> adaptersMap;
 
   public RecyclerViewGenerator(ObjectGraph graph, AdapterInfo info,
@@ -299,6 +303,39 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
     jw.endType(); // End of holders class
     jw.close();
+  }
+
+  private boolean checkViewTypeIntegerValues() {
+
+    HashMap<Integer, String> valuesMap = new HashMap<Integer, String>();
+
+    AdapterInfo adapterInfo = info;
+
+    while (adapterInfo != null) {
+      for (ViewTypeInfo vt : info.getViewTypes()) {
+
+        if (!vt.isCheckIntegerValue()) { // Skip if not checked
+          continue;
+        }
+
+        String found = valuesMap.get(vt.getIntegerValue());
+        if (found != null) {
+          logger.error(vt.getElement(),
+              "A ViewType with the value = %d has already be defined in %s. "
+                  + "You can disable this check with @ViewType( checkValue = false) if and only"
+                  + " if you have very good reasons", vt.getIntegerValue(), found);
+          return false;
+        }
+
+        valuesMap.put(vt.getIntegerValue(),
+            adapterInfo.getAdapterClassName() + "." + vt.getFieldName());
+      }
+
+      adapterInfo = adapterInfo.getAnnotatedAdapterSuperClass(adaptersMap);
+
+    }
+
+    return true;
   }
 
   @Override public void generateCode() throws IOException {

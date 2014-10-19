@@ -5,6 +5,7 @@ import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.VariableElement;
 
 /**
  * Information about an ViewType (read from @ViewType annotation)
@@ -30,6 +31,10 @@ public class ViewTypeInfo {
     }
   }
 
+  public Element getElement(){
+    return field;
+  }
+
   public String getFieldName() {
     return field.getSimpleName().toString();
   }
@@ -51,6 +56,14 @@ public class ViewTypeInfo {
 
   public List<FieldInfo> getFields() {
     return fieldInfos;
+  }
+
+  public boolean isCheckIntegerValue(){
+    return annotation.checkValue();
+  }
+
+  public int getIntegerValue(){
+    return (Integer) ((VariableElement) field).getConstantValue();
   }
 
   /*

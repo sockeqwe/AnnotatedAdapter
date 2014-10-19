@@ -32,6 +32,14 @@ public @interface ViewType {
    */
   boolean initMethod() default false;
 
+  /**
+   * if true (default value), annotated checks at compile time if the integer value of the view
+   * type
+   * is unique (including inheritance). Set it to <i>false</i> if and only if you have very good
+   * reasons to do that like overriding the inflated xml layout.
+   */
+  boolean checkValue() default true;
+
   /*
    * By providing a model the data will automatically be casted into this one and passed as
    * parameter into the corresponding binder interface. Only one model class is allowed.
