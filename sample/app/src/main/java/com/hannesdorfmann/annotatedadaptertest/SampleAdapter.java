@@ -5,7 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.hannesdorfmann.annotatedadapter.annotation.Field;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
-import com.hannesdorfmann.annotatedadapter.support.SupportAnnotatedAdapter;
+import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportAnnotatedAdapter;
 import java.util.List;
 
 /**

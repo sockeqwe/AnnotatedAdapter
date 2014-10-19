@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Filer;
 import javax.inject.Inject;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
 
@@ -307,40 +308,68 @@ public class RecyclerViewGenerator implements CodeGenerator {
 
   private boolean checkViewTypeIntegerValues() {
 
-    HashMap<Integer, String> valuesMap = new HashMap<Integer, String>();
+    HashMap<Integer, Pair<AdapterInfo, ViewTypeInfo>> valuesMap =
+        new HashMap<Integer, Pair<AdapterInfo, ViewTypeInfo>>();
 
     AdapterInfo adapterInfo = info;
 
     while (adapterInfo != null) {
-      for (ViewTypeInfo vt : info.getViewTypes()) {
+      for (ViewTypeInfo vt : adapterInfo.getViewTypes()) {
 
         if (!vt.isCheckIntegerValue()) { // Skip if not checked
           continue;
         }
 
-        String found = valuesMap.get(vt.getIntegerValue());
+        Pair<AdapterInfo, ViewTypeInfo> found = valuesMap.get(vt.getIntegerValue());
         if (found != null) {
-          logger.error(vt.getElement(),
-              "A ViewType with the value = %d has already be defined in %s. "
+
+          Element causeElement = found.second.getElement();
+          String firstVT = found.first.getAdapterClassName() + "." + found.second.getFieldName();
+          String secondVT = adapterInfo.getAdapterClassName() + "." + vt.getFieldName();
+
+          if (adapterInfo == info) {
+            // Swap to get user friendly error message if the viewtypes with same id are in the same java file
+            String tmp = firstVT;
+            firstVT = secondVT;
+            secondVT = tmp;
+            causeElement = vt.getElement();
+          }
+
+          logger.error(causeElement,
+              "The @ViewType %s has the same value = %d as @ViewType %s . "
                   + "You can disable this check with @ViewType( checkValue = false) if and only"
-                  + " if you have very good reasons", vt.getIntegerValue(), found);
+                  + " if you have very good reasons", firstVT, vt.getIntegerValue(), secondVT);
           return false;
         }
 
-        valuesMap.put(vt.getIntegerValue(),
-            adapterInfo.getAdapterClassName() + "." + vt.getFieldName());
+        valuesMap.put(vt.getIntegerValue(), Pair.create(adapterInfo, vt));
       }
 
       adapterInfo = adapterInfo.getAnnotatedAdapterSuperClass(adaptersMap);
-
     }
 
     return true;
   }
 
   @Override public void generateCode() throws IOException {
-    generateViewHolders();
-    generateBinderInterface();
-    generateAdapterHelper();
+    if (checkViewTypeIntegerValues()) {
+      generateViewHolders();
+      generateBinderInterface();
+      generateAdapterHelper();
+    }
+  }
+
+  private static class Pair<A, B> {
+    A first;
+    B second;
+
+    public Pair(A a, B b) {
+      first = a;
+      second = b;
+    }
+
+    public static <X, Y> Pair<X, Y> create(X a, Y b) {
+      return new Pair<X, Y>(a, b);
+    }
   }
 }

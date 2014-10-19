@@ -1,10 +1,11 @@
 package com.hannesdorfmann.annotatedadaptertest.abs;
 
 import android.content.Context;
+import android.util.Pair;
 import android.widget.TextView;
 import com.hannesdorfmann.annotatedadapter.annotation.Field;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
-import com.hannesdorfmann.annotatedadapter.support.SupportAnnotatedAdapter;
+import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportAnnotatedAdapter;
 import com.hannesdorfmann.annotatedadaptertest.R;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public abstract class AbsColorAdapter extends SupportAnnotatedAdapter {
   public AbsColorAdapter(Context context, List<String> items) {
     super(context);
     this.items = items;
+
+    Pair.create(2, 4);
   }
 
   @Override public int getItemCount() {

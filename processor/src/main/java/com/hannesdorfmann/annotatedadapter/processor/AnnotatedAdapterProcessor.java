@@ -165,8 +165,8 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     // Class things
     jw.emitPackage(SupportRecyclerDelegators.AUTO_GENERATOR_PACKAGE);
     jw.emitImports(
-        "com.hannesdorfmann.annotatedadapter.recyclerview.SupportRecyclerAdapterDelegator",
-        "com.hannesdorfmann.annotatedadapter.recyclerview.SupportAnnotatedAdapter");
+        "com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportRecyclerAdapterDelegator",
+        "com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportAnnotatedAdapter");
 
     jw.emitJavadoc("Generated class by AnnotatedAdapter . Do not modify this code!");
     jw.beginType(SupportRecyclerDelegators.AUTO_GENERATOR_CLASS_NAME, "class",
