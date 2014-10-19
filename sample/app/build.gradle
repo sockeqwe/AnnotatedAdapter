@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-  compileSdkVersion 'android-L'
+  compileSdkVersion 21
   buildToolsVersion "20.0.0"
 
   defaultConfig {
     applicationId "com.hannesdorfmann.annotatedadaptertest"
-    minSdkVersion 15
+    minSdkVersion 14
     targetSdkVersion 20
     versionCode 1
     versionName "1.0"
@@ -24,7 +24,7 @@ android {
   }
 }
 
-def adapterVersion = '0.5.31-SNAPSHOT'
+def adapterVersion = '0.5.33-SNAPSHOT'
 
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
