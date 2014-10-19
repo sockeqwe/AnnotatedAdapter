@@ -10,14 +10,6 @@ Check [GradlePlease](http://gradleplease.appspot.com/#com.hannesdorfmann.annotat
 
 To run annotation processing you need to apply Hugo Visser's awesome [android-apt](https://bitbucket.org/hvisser/android-apt) gradle plugin.
 
- - Use `AbsListAnnotatedAdapter` as base class and the following dependencies for `AbsListView widgets` like `ListView` or `GridView`: 
-```groovy
-dependencies {
-
-	compile 'com.hannesdorfmann.annotatedadapter:annotation:0.5.0-SNAPSHOT'
-	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'  	
-}
-```
  - Use `SupportAnnotatedAdapter` as base class and the following dependencies for `RecyclerView` from **support library**
 ```groovy
 dependencies {
@@ -27,15 +19,16 @@ dependencies {
 	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'
 }
 ```
- - Use `AnnotatedAdapter`as base class and the following dependencies for `RecyclerView` from Android 5.0 and above (**not** support library)
+
+ - Use `AbsListAnnotatedAdapter` as base class and the following dependencies for `AbsListView widgets` like `ListView` or `GridView`: 
 ```groovy
 dependencies {
 
 	compile 'com.hannesdorfmann.annotatedadapter:annotation:0.5.0-SNAPSHOT'
-	compile 'com.hannesdorfmann.annotatedadapter:recyclerview:0.5.0-SNAPSHOT'
-	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'
+	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'  	
 }
 ```
+
 
 # Usage
 Check out the sample folder, but basically you have to create an adapter class like this and annotate the view types with `@ViewType` and provide some more information in its annotation:
@@ -122,7 +115,7 @@ public class SampleAdapter extends SupportAnnotatedAdapter
 
 Even if there are already some comments in the code shown above, let's review the code step by step:
 
- 1. Create an adapter class that extends from `SupportAnnotatedAdapter` for _android.support.v7.widget.RecyclerView_ , `AnnotatedAdapter` for _RecyclerView in Android 5.0 (not from support library) or `AbsListAnnotatedAdapter` for _AbsListView (like ListView or GridView)_
+ 1. Create an adapter class that extends from `SupportAnnotatedAdapter` for _android.support.v7.widget.RecyclerView_ or `AbsListAnnotatedAdapter` for _AbsListView (like ListView or GridView)_
  2. Set view types like you would do in any normal adapter by specifying integer constants. Remember those constants must begin by zero.
  3. Annotate this view types with `@ViewType`. Specify the layout that should be inflated for this view type and declare the fields that should be generated for the corresponding view holder. The following anntated view type:
  ```java
