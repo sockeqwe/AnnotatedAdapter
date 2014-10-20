@@ -16,5 +16,5 @@ public interface AbsListViewAdapterDelegator {
       ViewGroup viewGroup, int viewType);
 
   public abstract void onBindViewHolder(AbsListViewAnnotatedAdapter adapter, View view,
-      int position);
+      int position, int viewType);
 }

@@ -39,7 +39,7 @@ public abstract class AbsListViewAnnotatedAdapter extends SimpleAbsListAdapter {
   }
 
   @Override public void bindView(int position, int type, View view) {
-    adapterDelegator.onBindViewHolder(this, view, position); // TODO type
+    adapterDelegator.onBindViewHolder(this, view, position, type); // TODO type
   }
 
   @Override public View newView(int type, ViewGroup parent) {

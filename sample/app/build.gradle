@@ -8,7 +8,7 @@ android {
   defaultConfig {
     applicationId "com.hannesdorfmann.annotatedadaptertest"
     minSdkVersion 14
-    targetSdkVersion 20
+    targetSdkVersion 21
     versionCode 1
     versionName "1.0"
   }
@@ -24,7 +24,7 @@ android {
   }
 }
 
-def adapterVersion = '0.5.40-SNAPSHOT'
+def adapterVersion = '0.5.41-SNAPSHOT'
 
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])

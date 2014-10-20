@@ -137,19 +137,19 @@ public class AbsListViewGenerator implements CodeGenerator {
 
     // onBindViewHolder
     jw.beginMethod("void", "onBindViewHolder", EnumSet.of(Modifier.PUBLIC),
-        ViewTypeSearcher.LISTVIEW_ADAPTER, "adapter", "View", "view", "int", "position");
+        ViewTypeSearcher.LISTVIEW_ADAPTER, "adapter", "View", "view", "int", "position", "int", "viewType");
 
     jw.emitEmptyLine();
-    jw.emitStatement("%s binder = (%s) adapter", info.getBinderClassName(),
-        info.getBinderClassName());
+    jw.emitStatement("%s castedAdapter = (%s) adapter", info.getAdapterClassName(),
+        info.getAdapterClassName());
     jw.emitStatement("Object vh = view.getTag()");
 
     ifs = 0;
     for (ViewTypeInfo vt : info.getViewTypes()) {
-      jw.beginControlFlow((ifs > 0 ? "else " : "") + "if (vh instanceof %s.%s)",
-          info.getViewHoldersClassName(), vt.getViewHolderClassName());
+      jw.beginControlFlow((ifs > 0 ? "else " : "") + "if (castedAdapter.%s == viewType)",
+          vt.getFieldName());
 
-      StringBuilder builder = new StringBuilder("binder.");
+      StringBuilder builder = new StringBuilder("castedAdapter.");
       builder.append(vt.getBinderMethodName());
       builder.append("( (");
       builder.append(info.getViewHoldersClassName());
