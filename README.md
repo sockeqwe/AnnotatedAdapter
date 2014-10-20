@@ -4,10 +4,10 @@ Write less code with AnnotatedAdapter, an annotation processor for generating `R
 
 # Best Practice
 An interface called `Binder` (see Usage) will be generated for each AnnoatedAdapter. Hence the following workflow is considered as best practice in android studio:
-1. Create your adapter class and make this class extends from `SupportAnnotatedAdapter`
-2. Define at least one `@ViewType`
-3. In the main menu bar: `Build -> Rebuild Project`. This will force to generate the _Binder interface_
-4. Make your adapter class implementing the Binder interface and implement the required methods
+ 1. Create your adapter class and make this class extends from `SupportAnnotatedAdapter`
+ 2. Define at least one `@ViewType`
+ 3. In the main menu bar: `Build -> Rebuild Project`. This will force to generate the _Binder interface_
+ 4. Make your adapter class implementing the Binder interface and implement the required methods
 
 Note that the manually triggered rebuild is normally required only on the very first time you create a new adapter class.
 
@@ -120,7 +120,7 @@ public class SampleAdapter extends SupportAnnotatedAdapter
 Even if there are already some comments in the code shown above, let's review the code step by step:
 
  1. Create an adapter class that extends from `SupportAnnotatedAdapter` for _android.support.v7.widget.RecyclerView_ or `AbsListAnnotatedAdapter` for _AbsListView (like ListView or GridView)_
- 2. Set view types like you would do in any normal adapter by specifying integer constants. Remember those constants must begin by zero.
+ 2. Set view types like you would do in any normal adapter by specifying integer constants. Remember those constants must start with zero.
  3. Annotate this view types with `@ViewType`. Specify the layout that should be inflated for this view type and declare the fields that should be generated for the corresponding view holder. The following anntated view type:
  ```java
  @ViewType(
