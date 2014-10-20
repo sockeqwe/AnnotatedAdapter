@@ -7,5 +7,6 @@
     <string name="title_activity_list_view">ListViewActivity</string>
     <string name="title_activity_main">Annotated Adapter</string>
     <string name="title_activity_list_view_inheritance">ListViewInheritanceActivity</string>
+    <string name="title_activity_grid_view">GridViewActivity</string>
 
 </resources>
