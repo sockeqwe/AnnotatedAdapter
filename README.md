@@ -151,7 +151,7 @@ Even if there are already some comments in the code shown above, let's review th
    ```
  4. Like in any other adapter you have to specify which view type should be displayed for the given position by overriding `public int getItemViewType(int position)` and you of course you have to say how many items are displayed in the RecyclerView / ListView by overriding `public int getItemCount()`
  5. An interface will be generated (if adapter class contains at least one `@ViewType`) with the name `AdapterClassName + Binder`. 
- 6. Make your adapter class implement this interface. For each view type you have to implement the corresponding `bindViewHolder()` method where you bind the data to the generated view holder. 
+ 6. Let your adapter class implement this interface. For each view type you have to implement the corresponding `bindViewHolder()` method where you bind the data to the generated view holder. 
 
 
 # Lifecycle and methods call
@@ -184,7 +184,7 @@ public class OtherAdapter extends BaseAdpter implements BaseAdapterHolder {
 }
 ```    
 
-In this case are `@ViewType simpleRow = 0` and `@ViewType otherRow = 0` which will cause internal problems on recycling. 
+In this case are `@ViewType simpleRow = 0` and `@ViewType otherRow = 0` which will cause unexpected behaviour. 
 To avoid this kind of problems AnnotatedAdapter will throw a compile time error that states that there are two view types with the same value.
 However, you can disable this check by setting `@ViewType( checkValue = false )`. Do that only if you have a very good reason.
 Usually it should be enough to override the `bindViewHolder()` method in your subclass instead of setting `@ViewType( checkValue = false )`.
