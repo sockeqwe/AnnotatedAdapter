@@ -1,22 +1,17 @@
 package com.hannesdorfmann.annotatedadapter.processor;
 
 import com.google.auto.service.AutoService;
+import com.hannesdorfmann.annotatedadapter.AbsListViewDelegators;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
+import com.hannesdorfmann.annotatedadapter.processor.generator.AbsListViewGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.generator.CodeGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.generator.RecyclerViewGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.util.AnnotatedAdapterModule;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
 import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportRecyclerDelegators;
-import repacked.com.squareup.javawriter.JavaWriter;
 import dagger.ObjectGraph;
-import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -35,11 +30,8 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
+import repacked.com.squareup.javawriter.JavaWriter;
 
 /**
  * AnnotationProcessor for AnnotatedAdapter @ViewType
@@ -72,39 +64,6 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     return SourceVersion.latestSupported();
   }
 
-  private String getExecutionPath() throws UnsupportedEncodingException {
-    String path = AnnotatedAdapterProcessor.class.getProtectionDomain()
-        .getCodeSource()
-        .getLocation()
-        .getPath();
-    String decodedPath = URLDecoder.decode(path, "UTF-8");
-
-    return decodedPath;
-  }
-
-  private String getWorkingDir() {
-    Path currentRelativePath = Paths.get("");
-    String s = currentRelativePath.toAbsolutePath().toString();
-    return s;
-  }
-
-  private String getExcecutionByClassLoader() {
-    ClassLoader loader = AnnotatedAdapterProcessor.class.getClassLoader();
-    URL url = loader.getResource(".");
-    return url.getFile();
-  }
-
-  private String getByEnv() {
-    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-    StandardJavaFileManager fm = compiler.getStandardFileManager(null, null, null);
-
-    Iterable<? extends File> locations = fm.getLocation(StandardLocation.SOURCE_PATH);
-    if (locations.iterator().hasNext()) {
-      return locations.iterator().next().getAbsolutePath();
-    }
-    return null;
-  }
-
   @Override public boolean process(Set<? extends TypeElement> annotations,
       RoundEnvironment roundEnv) {
 
@@ -116,6 +75,7 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     }
 
     List<AdapterInfo> recyclerApapters = new ArrayList<AdapterInfo>();
+    List<AdapterInfo> listViewAdapters = new ArrayList<AdapterInfo>();
 
     // Code generators
     try {
@@ -128,7 +88,9 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
           codeGen.generateCode();
           recyclerApapters.add(adapterInfo);
         } else {
-          // TODO listview generator
+          CodeGenerator codeGen = new AbsListViewGenerator(objectGraph, adapterInfo, adapters);
+          codeGen.generateCode();
+          listViewAdapters.add(adapterInfo);
         }
       }
     } catch (Exception e) {
@@ -136,7 +98,7 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
       logger.error(null, "An error has occurred while generating adapters code! See stacktrace!");
     }
 
-    // Generate adapter delegators
+    // Generate recycler adapter delegators
     if (!recyclerApapters.isEmpty()) {
       try {
         generateSupportRecyclerDelegators(recyclerApapters);
@@ -147,6 +109,19 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
             excpetion.getMessage());
       }
     }
+
+    // Generate listview adapter delegators
+    if (!listViewAdapters.isEmpty()) {
+      try {
+        generateListViewAdapters(listViewAdapters);
+      } catch (IOException excpetion) {
+        excpetion.printStackTrace();
+        logger.error(recyclerApapters.get(0).getAdapterClass(),
+            "An error has occurred while generating AutoListViewAdapterDelegator: %s",
+            excpetion.getMessage());
+      }
+    }
+
     return false;
   }
 
@@ -174,6 +149,53 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
 
     jw.beginMethod("SupportRecyclerAdapterDelegator", "getDelegator", EnumSet.of(Modifier.PUBLIC),
         "SupportAnnotatedAdapter", "adapter");
+
+    jw.emitEmptyLine();
+    jw.emitStatement("String name = adapter.getClass().getCanonicalName()");
+    jw.emitEmptyLine();
+
+    for (AdapterInfo info : adapters) {
+      jw.beginControlFlow("if (name.equals(\"%s\"))", info.getQualifiedAdapterClassName());
+      jw.emitStatement("return new %s()", info.getQualifiedAdapterDelegatorClassName());
+      jw.endControlFlow();
+      jw.emitEmptyLine();
+    }
+
+    jw.emitStatement(
+        "throw new RuntimeException(\"Could not find adapter delegate for \" + adapter)");
+    jw.endMethod();
+    jw.emitEmptyLine();
+
+    jw.endType();
+
+    jw.close();
+  }
+
+
+  private void generateListViewAdapters(List<AdapterInfo> adapters) throws IOException {
+
+    if (adapters.isEmpty()) {
+      return;
+    }
+
+    Element element = adapters.get(0).getAdapterClass();
+    JavaFileObject jfo =
+        filer.createSourceFile(AbsListViewDelegators.AUTO_GENERATOR_QUALIFIED_NAME, element);
+    Writer writer = jfo.openWriter();
+    JavaWriter jw = new JavaWriter(writer);
+
+    // Class things
+    jw.emitPackage(AbsListViewDelegators.AUTO_GENERATOR_PACKAGE);
+    jw.emitImports(
+        "com.hannesdorfmann.annotatedadapter.AbsListViewAdapterDelegator",
+        "com.hannesdorfmann.annotatedadapter.AbsListViewAnnotatedAdapter");
+
+    jw.emitJavadoc("Generated class by AnnotatedAdapter . Do not modify this code!");
+    jw.beginType(AbsListViewDelegators.AUTO_GENERATOR_CLASS_NAME, "class",
+        EnumSet.of(Modifier.PUBLIC), null, AbsListViewDelegators.class.getCanonicalName());
+
+    jw.beginMethod("AbsListViewAdapterDelegator", "getDelegator", EnumSet.of(Modifier.PUBLIC),
+        "AbsListViewAnnotatedAdapter", "adapter");
 
     jw.emitEmptyLine();
     jw.emitStatement("String name = adapter.getClass().getCanonicalName()");

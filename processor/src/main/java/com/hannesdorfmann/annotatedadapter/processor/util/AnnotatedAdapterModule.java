@@ -3,6 +3,7 @@ package com.hannesdorfmann.annotatedadapter.processor.util;
 import com.hannesdorfmann.annotatedadapter.processor.AdapterInfo;
 import com.hannesdorfmann.annotatedadapter.processor.AnnotatedAdapterProcessor;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeSearcher;
+import com.hannesdorfmann.annotatedadapter.processor.generator.AbsListViewGenerator;
 import com.hannesdorfmann.annotatedadapter.processor.generator.RecyclerViewGenerator;
 import dagger.Module;
 import dagger.Provides;
@@ -18,7 +19,7 @@ import javax.lang.model.util.Types;
 @Module(
     injects = {
         AnnotatedAdapterProcessor.class, ViewTypeSearcher.class, RecyclerViewGenerator.class,
-        AdapterInfo.class
+        AdapterInfo.class, AbsListViewGenerator.class
     }
 
     , library = true // TODO remove

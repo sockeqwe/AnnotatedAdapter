@@ -24,7 +24,7 @@ android {
   }
 }
 
-def adapterVersion = '0.5.33-SNAPSHOT'
+def adapterVersion = '0.5.40-SNAPSHOT'
 
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])

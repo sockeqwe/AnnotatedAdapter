@@ -27,6 +27,10 @@ public class ViewTypeSearcher {
   public static final String SUPPORT_RECYCLER_ADAPTER =
       "com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportAnnotatedAdapter";
 
+
+  public static final String LISTVIEW_ADAPTER = "com.hannesdorfmann.annotatedadapter.AbsListViewAnnotatedAdapter";
+
+
   @Inject ProcessorMessage logger;
   @Inject TypeHelper typeHelper;
   @Inject Elements elementUtils;
@@ -165,7 +169,8 @@ public class ViewTypeSearcher {
       return AdapterInfo.AdapterType.SUPPORT_RECYCLER_VIEW;
     }
 
-    TypeElement listAdapter = elementUtils.getTypeElement("android.widget.Adapter"); // TODO adapter
+    TypeElement listAdapter =
+        elementUtils.getTypeElement(AbsListViewAnnotatedAdapter.class.getCanonicalName());
     if (typeUtils.isSubtype(adapterClass.asType(), listAdapter.asType())) {
       return AdapterInfo.AdapterType.LIST_VIEW;
     }
