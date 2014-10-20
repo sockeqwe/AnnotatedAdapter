@@ -186,6 +186,6 @@ public class OtherAdapter extends BaseAdpter implements BaseAdapterHolder {
 
 In this case are `@ViewType simpleRow = 0` and `@ViewType otherRow = 0` which will cause unexpected behaviour. 
 To avoid this kind of problems AnnotatedAdapter will throw a compile time error that states that there are two view types with the same value.
-However, you can disable this check by setting `@ViewType( checkValue = false )`. Do that only if you have a very good reason.
+However, you can disable this check by setting `@ViewType( checkValue = false )`. Do that only if you have a very good reason for.
 Usually it should be enough to override the `bindViewHolder()` method in your subclass instead of setting `@ViewType( checkValue = false )`.
 The only good reason I can see right now is to "override" the xml layout that should be inflated. Notice that at this point the subclass @ViewType definition will be used instead of the base class @ViewType definition.
