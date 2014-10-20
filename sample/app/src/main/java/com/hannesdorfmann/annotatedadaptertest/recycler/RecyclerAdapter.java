@@ -1,4 +1,4 @@
-package com.hannesdorfmann.annotatedadaptertest;
+package com.hannesdorfmann.annotatedadaptertest.recycler;
 
 import android.content.Context;
 import android.widget.ImageView;
@@ -6,12 +6,13 @@ import android.widget.TextView;
 import com.hannesdorfmann.annotatedadapter.annotation.Field;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportAnnotatedAdapter;
+import com.hannesdorfmann.annotatedadaptertest.R;
 import java.util.List;
 
 /**
  * @author Hannes Dorfmann
  */
-public class SampleAdapter extends SupportAnnotatedAdapter implements SampleAdapterBinder {
+public class RecyclerAdapter extends SupportAnnotatedAdapter implements RecyclerAdapterBinder {
 
   @ViewType(
       layout = R.layout.row_medium,
@@ -35,7 +36,7 @@ public class SampleAdapter extends SupportAnnotatedAdapter implements SampleAdap
 
   List<String> items;
 
-  public SampleAdapter(Context context, List<String> items) {
+  public RecyclerAdapter(Context context, List<String> items) {
     super(context);
     this.items = items;
   }
@@ -56,19 +57,19 @@ public class SampleAdapter extends SupportAnnotatedAdapter implements SampleAdap
     }
   }
 
-  @Override public void bindViewHolder(SampleAdapterHolders.MediumRowViewHolder vh, int position) {
+  @Override public void bindViewHolder(RecyclerAdapterHolders.MediumRowViewHolder vh, int position) {
 
     String str = items.get(position);
     vh.text.setText(str);
   }
 
-  @Override public void bindViewHolder(SampleAdapterHolders.RowWithPicViewHolder vh, int position) {
+  @Override public void bindViewHolder(RecyclerAdapterHolders.RowWithPicViewHolder vh, int position) {
     String str = items.get(position);
     vh.text.setText(str);
     vh.image.setImageResource(R.drawable.ic_launcher);
   }
 
-  @Override public void bindViewHolder(SampleAdapterHolders.SmallRowViewHolder vh, int position) {
+  @Override public void bindViewHolder(RecyclerAdapterHolders.SmallRowViewHolder vh, int position) {
     String str = items.get(position);
     vh.text.setText(str);
   }

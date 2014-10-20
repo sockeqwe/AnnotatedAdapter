@@ -18,7 +18,8 @@ public class ListAdapter extends AbsListViewAnnotatedAdapter implements ListAdap
 
   @ViewType(
       layout = R.layout.row_small,
-      fields = @Field(id = R.id.textView, name = "text", type = TextView.class))
+      fields = @Field(id = R.id.textView, name = "text", type = TextView.class),
+      initMethod = true)
   public final int rowSimple = 0;
 
   @ViewType(
@@ -48,6 +49,11 @@ public class ListAdapter extends AbsListViewAnnotatedAdapter implements ListAdap
 
   @Override public long getItemId(int position) {
     return 0;
+  }
+
+  @Override public void initViewHolder(ListAdapterHolders.RowSimpleViewHolder vh, View view,
+      ViewGroup parent) {
+    vh.text.setTextColor(Color.RED);
   }
 
   @Override public void bindViewHolder(ListAdapterHolders.RowSimpleViewHolder vh, int position) {

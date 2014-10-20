@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.hannesdorfmann.annotatedadaptertest.abs.ColorActivity;
+import com.hannesdorfmann.annotatedadaptertest.listview.inheritance.ListViewInheritanceActivity;
+import com.hannesdorfmann.annotatedadaptertest.recycler.RecyclerActivity;
+import com.hannesdorfmann.annotatedadaptertest.recycler.inheritance.ColorActivity;
 import com.hannesdorfmann.annotatedadaptertest.listview.ListViewActivity;
 
 public class MainActivity extends Activity {
@@ -19,7 +21,7 @@ public class MainActivity extends Activity {
 
   @OnClick(R.id.recyclerSimple)
   public void onRecyclerSimpleClicked() {
-    startActivity(SampleActivity.class);
+    startActivity(RecyclerActivity.class);
   }
 
   @OnClick(R.id.recyclerInheritance)
@@ -30,6 +32,11 @@ public class MainActivity extends Activity {
   @OnClick(R.id.listViewSimple)
   public void onListSimpleClicked() {
     startActivity(ListViewActivity.class);
+  }
+
+  @OnClick(R.id.listViewInheritance)
+  public void onListInheritanceClicked() {
+    startActivity(ListViewInheritanceActivity.class);
   }
 
   private void startActivity(Class<? extends Activity> targetClass) {

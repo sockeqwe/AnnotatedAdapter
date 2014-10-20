@@ -1,4 +1,4 @@
-package com.hannesdorfmann.annotatedadaptertest.abs;
+package com.hannesdorfmann.annotatedadaptertest.recycler.inheritance;
 
 import android.content.Context;
 import android.graphics.Color;

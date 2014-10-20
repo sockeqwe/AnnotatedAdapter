@@ -1,4 +1,4 @@
-package com.hannesdorfmann.annotatedadaptertest;
+package com.hannesdorfmann.annotatedadaptertest.recycler;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,10 +6,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.hannesdorfmann.annotatedadaptertest.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SampleActivity extends Activity {
+public class RecyclerActivity extends Activity {
 
   @InjectView(R.id.recyclerView) RecyclerView recyclerView;
 
@@ -24,7 +25,7 @@ public class SampleActivity extends Activity {
       list.add("Item " + i);
     }
 
-    SampleAdapter adapter = new SampleAdapter(this, list);
+    RecyclerAdapter adapter = new RecyclerAdapter(this, list);
 
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setAdapter(adapter);

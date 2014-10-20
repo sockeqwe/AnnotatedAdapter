@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     tools:context="com.hannesdorfmann.annotatedadaptertest.listview.ListViewActivity">
 
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+  <ListView
+      android:id="@+id/listView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      />
 
 </RelativeLayout>

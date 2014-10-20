@@ -137,11 +137,14 @@ public class AbsListViewGenerator implements CodeGenerator {
 
     // onBindViewHolder
     jw.beginMethod("void", "onBindViewHolder", EnumSet.of(Modifier.PUBLIC),
-        ViewTypeSearcher.LISTVIEW_ADAPTER, "adapter", "View", "view", "int", "position", "int", "viewType");
+        ViewTypeSearcher.LISTVIEW_ADAPTER, "adapter", "View", "view", "int", "position", "int",
+        "viewType");
 
     jw.emitEmptyLine();
     jw.emitStatement("%s castedAdapter = (%s) adapter", info.getAdapterClassName(),
         info.getAdapterClassName());
+    jw.emitStatement("%s binder = (%s) adapter", info.getBinderClassName(),
+        info.getBinderClassName());
     jw.emitStatement("Object vh = view.getTag()");
 
     ifs = 0;
@@ -149,7 +152,7 @@ public class AbsListViewGenerator implements CodeGenerator {
       jw.beginControlFlow((ifs > 0 ? "else " : "") + "if (castedAdapter.%s == viewType)",
           vt.getFieldName());
 
-      StringBuilder builder = new StringBuilder("castedAdapter.");
+      StringBuilder builder = new StringBuilder("binder.");
       builder.append(vt.getBinderMethodName());
       builder.append("( (");
       builder.append(info.getViewHoldersClassName());
@@ -172,7 +175,7 @@ public class AbsListViewGenerator implements CodeGenerator {
     }
 
     if (info.hasAnnotatedAdapterSuperClass(adaptersMap)) {
-      jw.emitStatement("super.onBindViewHolder(adapter, view, position)");
+      jw.emitStatement("super.onBindViewHolder(adapter, view, position, viewType)");
     } else {
       jw.emitStatement(
           "throw new java.lang.IllegalArgumentException(" + "\"Binder method not found\")");

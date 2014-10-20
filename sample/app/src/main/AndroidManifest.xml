@@ -8,15 +8,15 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.hannesdorfmann.annotatedadaptertest.SampleActivity"
+            android:name=".recycler.RecyclerActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.hannesdorfmann.annotatedadaptertest.abs.ColorActivity"
+            android:name="com.hannesdorfmann.annotatedadaptertest.recycler.inheritance.ColorActivity"
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" >
-            </activity>
+        </activity>
         <activity
             android:name="com.hannesdorfmann.annotatedadaptertest.listview.ListViewActivity"
             android:label="@string/title_activity_list_view" >
@@ -24,10 +24,15 @@
         <activity
             android:name="com.hannesdorfmann.annotatedadaptertest.MainActivity"
             android:label="@string/title_activity_main" >
-          <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-          </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.hannesdorfmann.annotatedadaptertest.listview.inheritance.ListViewInheritanceActivity"
+            android:label="@string/title_activity_list_view_inheritance" >
         </activity>
     </application>
 

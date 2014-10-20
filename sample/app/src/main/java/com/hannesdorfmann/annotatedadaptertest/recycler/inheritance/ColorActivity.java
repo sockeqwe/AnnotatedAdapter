@@ -1,4 +1,4 @@
-package com.hannesdorfmann.annotatedadaptertest.abs;
+package com.hannesdorfmann.annotatedadaptertest.recycler.inheritance;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.hannesdorfmann.annotatedadaptertest.DividerItemDecoration;
+import com.hannesdorfmann.annotatedadaptertest.recycler.DividerItemDecoration;
 import com.hannesdorfmann.annotatedadaptertest.R;
 import java.util.ArrayList;
 import java.util.List;

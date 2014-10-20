@@ -1,4 +1,4 @@
-package com.hannesdorfmann.annotatedadaptertest;
+package com.hannesdorfmann.annotatedadaptertest.recycler;
 
 import android.content.Context;
 import android.content.res.TypedArray;

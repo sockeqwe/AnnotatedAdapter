@@ -1,36 +1,39 @@
-package com.hannesdorfmann.annotatedadaptertest.abs;
+package com.hannesdorfmann.annotatedadaptertest.listview.inheritance;
 
 import android.content.Context;
-import android.util.Pair;
 import android.widget.TextView;
+import com.hannesdorfmann.annotatedadapter.AbsListViewAnnotatedAdapter;
 import com.hannesdorfmann.annotatedadapter.annotation.Field;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
-import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportAnnotatedAdapter;
 import com.hannesdorfmann.annotatedadaptertest.R;
 import java.util.List;
 
 /**
  * @author Hannes Dorfmann
  */
-public abstract class AbsColorAdapter extends SupportAnnotatedAdapter {
-
-  protected List<String> items;
+public abstract class AbsColorAdapter extends AbsListViewAnnotatedAdapter implements AbsColorAdapterBinder {
 
   @ViewType(
       layout = R.layout.row_small,
       fields = @Field(id = R.id.textView, name = "text", type = TextView.class))
-  public final int smallRow = 0;
+  public final int rowSimple = 0;
+
+  protected List<String> items;
 
   public AbsColorAdapter(Context context, List<String> items) {
     super(context);
     this.items = items;
-
-    Pair.create(2, 4);
   }
 
-  @Override public int getItemCount() {
+  @Override public int getCount() {
     return items == null ? 0 : items.size();
   }
 
+  @Override public Object getItem(int position) {
+    return items.get(position);
+  }
 
+  @Override public long getItemId(int position) {
+    return 0;
+  }
 }
