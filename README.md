@@ -1,6 +1,6 @@
 # AnnotatedAdapter
 Sick of writing ViewHolder classes, inflate xml and distinguish ViewTypes in your adapters?  
-Write less code with AnnotatedAdapter, an annotation processor for generating `RecyclerView` and `AbsListView` adapters. So no longer wirte ViewHolder classes, inflate xml layouts and lots of if-else and switch-case to bind the data to the view holder. AnnotatedAdpater generates that boilerplate code for you at compile time by annotation processing (not using reflections, so performance will be the same as handwritten).
+Write less code with AnnotatedAdapter, an annotation processor for generating `RecyclerView` and `AbsListView` adapters. *So you no longer have to wirte ViewHolder classes, inflate xml layouts and lots of if-else or switch-case to determine how to bind the data to the view holder by hand. AnnotatedAdpater generates that boilerplate code for you* at compile time by annotation processing (not using reflections, so performance will be the same as handwritten).
 
 # Best Practice
 An interface called `Binder` (see Usage) will be generated for each AnnoatedAdapter. Hence the following workflow is considered as best practice in android studio:
