@@ -2,8 +2,15 @@
 Sick of writing ViewHolder classes, inflate xml and distinguish ViewTypes in your adapters?  
 Write less code with AnnotatedAdapter, an annotation processor for generating `RecyclerView` and `AbsListView` adapters.
 
-# Work in Progress
-Please note that this project is still under development. However **SNAPSHOTS** are available in maven central. Right now only `android.support.v7.widget.RecyclerView` is implemented. `AbsListView` as well as `android.widget.RecyclerView` (Android 5.0) will be implemented in the final 1.0.0 release
+# Best Practice
+An interface called `Binder` (see Usage) will be generated for each AnnoatedAdapter. Hence the following workflow is considered as best practice in android studio:
+1. Create your adapter class and make this class extends from `SupportAnnotatedAdapter`
+2. Define at least one `@ViewType`
+3. In the main menu bar: `Build -> Rebuild Project`. This will force to generate the _Binder interface_
+4. Make your adapter class implementing the Binder interface and implement the required methods
+
+Note that the manually triggered rebuild is normally required only on the very first time you create a new adapter class.
+
 
 # Dependency
 Check [GradlePlease](http://gradleplease.appspot.com/#com.hannesdorfmann.annotatedadapter) to get the latest version number.
@@ -13,22 +20,19 @@ To run annotation processing you need to apply Hugo Visser's awesome [android-ap
  - Use `SupportAnnotatedAdapter` as base class and the following dependencies for `RecyclerView` from **support library**
 ```groovy
 dependencies {
-
-	compile 'com.hannesdorfmann.annotatedadapter:annotation:0.5.0-SNAPSHOT'
-	compile 'com.hannesdorfmann.annotatedadapter:support-recyclerview:0.5.0-SNAPSHOT'
-	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'
+	compile 'com.hannesdorfmann.annotatedadapter:annotation:1.0.0'
+	compile 'com.hannesdorfmann.annotatedadapter:support-recyclerview:1.0.0'
+	apt 'com.hannesdorfmann.annotatedadapter:processor:1.0.0'
 }
 ```
 
  - Use `AbsListAnnotatedAdapter` as base class and the following dependencies for `AbsListView widgets` like `ListView` or `GridView`: 
 ```groovy
 dependencies {
-
-	compile 'com.hannesdorfmann.annotatedadapter:annotation:0.5.0-SNAPSHOT'
-	apt 'com.hannesdorfmann.annotatedadapter:processor:0.5.0-SNAPSHOT'  	
+	compile 'com.hannesdorfmann.annotatedadapter:annotation:1.0.0'
+	apt 'com.hannesdorfmann.annotatedadapter:processor:1.0.0'  	
 }
 ```
-
 
 # Usage
 Check out the sample folder, but basically you have to create an adapter class like this and annotate the view types with `@ViewType` and provide some more information in its annotation:
@@ -181,7 +185,7 @@ public class OtherAdapter extends BaseAdpter implements BaseAdapterHolder {
 ```    
 
 In this case are `@ViewType simpleRow = 0` and `@ViewType otherRow = 0` which will cause internal problems on recycling. 
-To avoid this kind of problems AnnotatedAdapter will throw a compile time error that states that there are two view type with the same value `0`.
+To avoid this kind of problems AnnotatedAdapter will throw a compile time error that states that there are two view types with the same value.
 However, you can disable this check by setting `@ViewType( checkValue = false )`. Do that only if you have a very good reason.
 Usually it should be enough to override the `bindViewHolder()` method in your subclass instead of setting `@ViewType( checkValue = false )`.
-The only good reason I can see right now to use this feature is to "override" the xml layout that should be inflated. Notice that at this point the subclass @ViewType definition will be used instead of the base class @ViewType definition.
+The only good reason I can see right now is to "override" the xml layout that should be inflated. Notice that at this point the subclass @ViewType definition will be used instead of the base class @ViewType definition.
