@@ -4,6 +4,8 @@ Write less code with AnnotatedAdapter, an annotation processor for generating `R
 
 [Check this blog post](http://hannesdorfmann.com/android/AnnotatedAdapter/) or this [sample adapter](https://github.com/sockeqwe/AnnotatedAdapter/blob/master/sample/app/src/main/java/com/hannesdorfmann/annotatedadaptertest/recycler/RecyclerAdapter.java) and you will se how much lesser code you have to write and how much cleaner your adapters code looks like.
 
+I'm working on a solution for automatically detecting ViewHolder classes by scanning the xml layouts. A possible solution is discussed [here](https://github.com/sockeqwe/AnnotatedAdapter/issues/4)
+
 # Best Practice
 An interface called `Binder` (see Usage) will be generated for each AnnoatedAdapter. Hence the following workflow is considered as best practice in android studio:
  1. Create your adapter class and make this class extends from `SupportAnnotatedAdapter`
