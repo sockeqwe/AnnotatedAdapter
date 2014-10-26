@@ -31,7 +31,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import repacked.com.squareup.javawriter.JavaWriter;
 
@@ -66,15 +65,22 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
     return SourceVersion.latestSupported();
   }
 
+  private void printDir(File dir){
+    for (File file : dir.listFiles()){
+      logger.note(null, file.getAbsolutePath());
+      if (file.isDirectory()){
+        printDir(file);
+      }
+    }
+  }
+
   @Override public boolean process(Set<? extends TypeElement> annotations,
       RoundEnvironment roundEnv) {
 
     final String androidResourceDir = processingEnv.getOptions().get("androidResourceDir");
     File layoutsDir = new File(androidResourceDir);
 
-    for (File file : layoutsDir.listFiles()) {
-      processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,file.getAbsolutePath());
-    }
+    printDir(layoutsDir);
 
     // Search for annotated fields
     ViewTypeSearcher viewTypeSearcher = new ViewTypeSearcher(objectGraph);

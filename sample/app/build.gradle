@@ -1,6 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
+apt {
+  arguments {
+    androidResourceDir variant.processResources.resDir
+  }
+}
+
+
 android {
   compileSdkVersion 21
   buildToolsVersion "20.0.0"
@@ -24,7 +31,7 @@ android {
   }
 }
 
-def adapterVersion = '0.5.43-SNAPSHOT'
+def adapterVersion = '1.0.2-SNAPSHOT'
 
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
