@@ -10,6 +10,7 @@ import com.hannesdorfmann.annotatedadapter.processor.util.AnnotatedAdapterModule
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
 import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportRecyclerDelegators;
 import dagger.ObjectGraph;
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import repacked.com.squareup.javawriter.JavaWriter;
 
@@ -66,6 +68,13 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
 
   @Override public boolean process(Set<? extends TypeElement> annotations,
       RoundEnvironment roundEnv) {
+
+    final String androidResourceDir = processingEnv.getOptions().get("androidResourceDir");
+    File layoutsDir = new File(androidResourceDir);
+
+    for (File file : layoutsDir.listFiles()) {
+      processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,file.getAbsolutePath());
+    }
 
     // Search for annotated fields
     ViewTypeSearcher viewTypeSearcher = new ViewTypeSearcher(objectGraph);
