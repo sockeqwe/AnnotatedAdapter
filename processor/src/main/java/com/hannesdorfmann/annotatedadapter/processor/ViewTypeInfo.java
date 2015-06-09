@@ -1,6 +1,7 @@
 package com.hannesdorfmann.annotatedadapter.processor;
 
 import com.hannesdorfmann.annotatedadapter.annotation.Field;
+import com.hannesdorfmann.annotatedadapter.annotation.ViewField;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,18 +21,23 @@ public class ViewTypeInfo {
 
   private Element field;
   private ViewType annotation;
-  private List<FieldInfo> fieldInfos = new ArrayList<FieldInfo>(6);
+  private List<ViewInfo> viewInfos = new ArrayList<ViewInfo>(6);
+  private List<FieldInfo> fieldInfos = new ArrayList<FieldInfo>(3);
 
   public ViewTypeInfo(Element field, ViewType annotation) {
     this.field = field;
     this.annotation = annotation;
+
+    for (ViewField f : annotation.views()) {
+      viewInfos.add(new ViewInfo(f));
+    }
 
     for (Field f : annotation.fields()) {
       fieldInfos.add(new FieldInfo(f));
     }
   }
 
-  public Element getElement(){
+  public Element getElement() {
     return field;
   }
 
@@ -50,19 +56,23 @@ public class ViewTypeInfo {
     return BIND_METHOD_PREFIX;
   }
 
-  public String getInitMethodName(){
+  public String getInitMethodName() {
     return INIT_METHOD;
+  }
+
+  public List<ViewInfo> getViews() {
+    return viewInfos;
   }
 
   public List<FieldInfo> getFields() {
     return fieldInfos;
   }
 
-  public boolean isCheckIntegerValue(){
+  public boolean isCheckIntegerValue() {
     return annotation.checkValue();
   }
 
-  public int getIntegerValue(){
+  public int getIntegerValue() {
     return (Integer) ((VariableElement) field).getConstantValue();
   }
 

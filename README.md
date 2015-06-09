@@ -20,17 +20,17 @@ To run annotation processing you need to apply Hugo Visser's awesome [android-ap
  - Use `SupportAnnotatedAdapter` as base class and the following dependencies for `RecyclerView` from **support library**
 ```groovy
 dependencies {
-	compile 'com.hannesdorfmann.annotatedadapter:annotation:1.0.0'
-	compile 'com.hannesdorfmann.annotatedadapter:support-recyclerview:1.0.0'
-	apt 'com.hannesdorfmann.annotatedadapter:processor:1.0.0'
+	compile 'com.hannesdorfmann.annotatedadapter:annotation:1.1.0'
+	compile 'com.hannesdorfmann.annotatedadapter:support-recyclerview:1.1.0'
+	apt 'com.hannesdorfmann.annotatedadapter:processor:1.1.0'
 }
 ```
 
  - Use `AbsListAnnotatedAdapter` as base class and the following dependencies for `AbsListView widgets` like `ListView` or `GridView`: 
 ```groovy
 dependencies {
-	compile 'com.hannesdorfmann.annotatedadapter:annotation:1.0.0'
-	apt 'com.hannesdorfmann.annotatedadapter:processor:1.0.0'  	
+	compile 'com.hannesdorfmann.annotatedadapter:annotation:1.1.0'
+	apt 'com.hannesdorfmann.annotatedadapter:processor:1.1.0'
 }
 ```
 
@@ -47,8 +47,8 @@ public class SampleAdapter extends SupportAnnotatedAdapter
    */
   @ViewType(
       layout = R.layout.row_medium,   // The layout that will be inflated for this view type 
-      fields = {                      // The fields of the view holder
-        @Field(
+      views = {                      // The fields of the view holder
+        @ViewField(
             id = R.id.textView,       // The id of this view
             name = "text",            // The name of this field in the generated ViewHolder
             type = TextView.class)    // The type (class) of view in the generated view holder
@@ -60,9 +60,9 @@ public class SampleAdapter extends SupportAnnotatedAdapter
 
    @ViewType(
         layout = R.layout.row_with_pic,
-        fields = {
-            @Field(id = R.id.textView, name = "text", type = TextView.class),
-            @Field(id = R.id.imageView, name = "image", type = ImageView.class)
+        views = {
+            @ViewField(id = R.id.textView, name = "text", type = TextView.class),
+            @ViewField(id = R.id.imageView, name = "image", type = ImageView.class)
         }
     )
   public final int rowWithPic = 1;
@@ -125,20 +125,27 @@ Even if there are already some comments in the code shown above, let's review th
  ```java
  @ViewType(
          layout = R.layout.row_with_pic,
-         fields = {
-             @Field(id = R.id.textView, name = "fooText", type = TextView.class),
-             @Field(id = R.id.imageView, name = "image", type = ImageView.class)
+         views = {  // UI View Fields
+             @ViewField(id = R.id.textView, name = "fooText", type = TextView.class),
+             @ViewField(id = R.id.imageView, name = "image", type = ImageView.class)
+         },
+         field = { // other fields (not Views)
+            @Field(name="listener", type = MyClickListener.class )
          }
-   
+
      )
    public final int rowWithPic = 0;
  ```
  will generate the following view holder class:
  ```java
  public static class RowWithPicViewHolder extends android.support.v7.widget.RecyclerView.ViewHolder {
- 
-     public android.widget.TextView fooText;
-     public android.widget.ImageView image;
+
+     // UI View fields
+     public TextView fooText;
+     public ImageView image;
+
+     // Not View fields
+     public MyClickListener listener;
  
      public RowWithPicViewHolder(android.view.View view) {
  
@@ -160,7 +167,7 @@ Internally views and ViewHolders are created and are recycled like you expect fr
  2. If there is a cell (view) that can be recycled then continue in step 4.
  3. If no cell (view) can be recycled instantiate a new one:
     1. Inflate the xml layout specified in `@ViewType( layout = R.layout.id )`
-    2. Create a new instance of the corresponding ViewHolder class. `findViewById()`will be used for each field in `@ViewHolder ( fields = { @Field ( ... ) } )`
+    2. Create a new instance of the corresponding ViewHolder class. `findViewById()`will be used for each field in `@ViewHolder ( views = { @ViewField ( ... ) } )`. If you need additional fields (not view fields that are bound by `findViewById()`)  i.e. for having a field for `OnClickListener` you can do so by using `@ViewHolder ( fields = { @Field ( ... ) } )`
     3. If you want to do additional initialization of the inflated View (like setting the width or height of a subview) in code then you have to set `@ViewHolder( initMethod = true)`. This will force to create a method called `initViewHolder(viewHolderClass, view, parent)` in the Binder interface which you have to implement afterwards
  4. Call `bindViewHolder(viewHolder, position)` to bind the data to the cell (view)
  

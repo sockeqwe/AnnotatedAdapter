@@ -2,6 +2,7 @@ package com.hannesdorfmann.annotatedadapter.processor.generator;
 
 import com.hannesdorfmann.annotatedadapter.processor.AdapterInfo;
 import com.hannesdorfmann.annotatedadapter.processor.FieldInfo;
+import com.hannesdorfmann.annotatedadapter.processor.ViewInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeSearcher;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
@@ -278,12 +279,17 @@ public class RecyclerViewGenerator implements CodeGenerator {
           EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), VIEW_HOLDER);
       jw.emitEmptyLine();
 
-      // Insert fields
-      for (FieldInfo f : v.getFields()) {
-        jw.emitField(f.getQualifiedClassName(), f.getFieldName(), EnumSet.of(Modifier.PUBLIC));
+      // Insert views
+      for (ViewInfo f : v.getViews()) {
+        jw.emitField(f.getQualifiedClassName(), f.getViewFieldName(), EnumSet.of(Modifier.PUBLIC));
       }
 
-      if (!v.getFields().isEmpty()) {
+      // Insert not UI fields
+      for (FieldInfo f : v.getFields()) {
+        jw.emitField(f.getQualifiedClassName(), f.getViewFieldName(), EnumSet.of(Modifier.PUBLIC));
+      }
+
+      if (!v.getViews().isEmpty() || !v.getFields().isEmpty()) {
         jw.emitEmptyLine();
       }
 
@@ -291,8 +297,8 @@ public class RecyclerViewGenerator implements CodeGenerator {
       jw.emitEmptyLine();
       jw.emitStatement("super(view)");
       jw.emitEmptyLine();
-      for (FieldInfo f : v.getFields()) {
-        jw.emitStatement("%s = (%s) view.findViewById(%d)", f.getFieldName(),
+      for (ViewInfo f : v.getViews()) {
+        jw.emitStatement("%s = (%s) view.findViewById(%d)", f.getViewFieldName(),
             f.getQualifiedClassName(), f.getId());
       }
       jw.endConstructor();

@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotate integer fields with that annotation
+ * Annotate integer fields with that annotation to mark them as ViewType
  *
  * @author Hannes Dorfmann
  */
@@ -21,7 +21,21 @@ public @interface ViewType {
   int layout();
 
   /**
-   * The fields in the layout
+   * The UI view-fields for the view holder class. This view fields will be filled with Views
+   * inheriting from
+   * android.view.View that are automatically retrieved with <code>findViewById()</code>
+   *
+   * @see ViewField
+   * @see #fields()
+   */
+  ViewField[] views() default { };
+
+  /**
+   * Define some additional fields for the viewholders class that are NOT UI View fields (not binded
+   * with <code>findViewById()</code>).
+   *
+   * @see Field
+   * @see #views()
    */
   Field[] fields() default { };
 

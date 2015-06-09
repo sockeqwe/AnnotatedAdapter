@@ -1,23 +1,25 @@
 package com.hannesdorfmann.annotatedadapter.processor;
 
-import com.hannesdorfmann.annotatedadapter.annotation.Field;
+import com.hannesdorfmann.annotatedadapter.annotation.ViewField;
 import javax.lang.model.type.MirroredTypeException;
 
 /**
  * @author Hannes Dorfmann
  */
-public class FieldInfo {
+public class ViewInfo {
 
   private String qualifiedClassName;
   private String fieldName;
+  private int id;
 
 
-  public FieldInfo(Field view){
-    fieldName = view.name();
+  public ViewInfo(ViewField viewField){
+    fieldName = viewField.name();
+    id = viewField.id();
 
     try
     {
-      qualifiedClassName = view.type().getCanonicalName();
+      qualifiedClassName = viewField.type().getCanonicalName();
     }
     catch( MirroredTypeException mte )
     {
@@ -34,4 +36,7 @@ public class FieldInfo {
     return fieldName;
   }
 
+  public int getId() {
+    return id;
+  }
 }

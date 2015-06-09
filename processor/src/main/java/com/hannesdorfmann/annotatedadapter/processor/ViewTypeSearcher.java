@@ -77,7 +77,7 @@ public class ViewTypeSearcher {
     }
 
     if (field.getEnclosingElement().getKind() != ElementKind.CLASS) {
-      logger.error(field, "Only fields in a class can be annotated with @%s (caused by %s in %s)",
+      logger.error(field, "Only view-fields in a class can be annotated with @%s (caused by %s in %s)",
           ViewType.class, field.getSimpleName(), field.getEnclosingElement().asType().toString());
       return false;
     }
@@ -105,7 +105,7 @@ public class ViewTypeSearcher {
 
       // Check if its public
       if (!element.getModifiers().contains(Modifier.PUBLIC)) {
-        logger.error(element, "%s in %s is not public. Only final integer fields with public "
+        logger.error(element, "%s in %s is not public. Only final integer views with public "
                 + "visibility can be annotated with @%s.", element.getSimpleName(),
             element.getEnclosingElement().getSimpleName(), ViewType.class.getSimpleName());
         return false;
@@ -114,7 +114,7 @@ public class ViewTypeSearcher {
       // Check if its final
       if (!element.getModifiers().contains(Modifier.FINAL)) {
         logger.error(element,
-            "%s in %s is not final. Only final integer fields can be annotated with @%s.",
+            "%s in %s is not final. Only final integer views can be annotated with @%s.",
             element.getSimpleName(), element.getEnclosingElement().getSimpleName(),
             ViewType.class.getSimpleName());
         return false;
@@ -123,7 +123,7 @@ public class ViewTypeSearcher {
       // Check if its an int
       if (element.asType().getKind() != TypeKind.INT) {
         logger.error(element,
-            "%s in %s is not a integer. Only final public integer fields can be annotated with @%s.",
+            "%s in %s is not a integer. Only final public integer views can be annotated with @%s.",
             element.getSimpleName(), element.getEnclosingElement().getSimpleName(),
             ViewType.class.getSimpleName());
 
@@ -133,7 +133,7 @@ public class ViewTypeSearcher {
       // Everything is ok, its a valid integer
       return true;
     } else {
-      logger.error(element, "@%s can only be applied on integer fields. %s is not a field",
+      logger.error(element, "@%s can only be applied on integer views. %s is not a field",
           ViewType.class.getSimpleName(), element.getSimpleName());
       return false;
     }
@@ -185,7 +185,7 @@ public class ViewTypeSearcher {
   }
 
   /**
-   * Get all the classes that have annoatated fields
+   * Get all the classes that have annoatated views
    */
   public Map<String, AdapterInfo> getAdapterInfos() {
     return classMap;

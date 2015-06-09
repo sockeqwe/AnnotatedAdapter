@@ -67,7 +67,7 @@ public class AnnotatedAdapterProcessor extends AbstractProcessor {
   @Override public boolean process(Set<? extends TypeElement> annotations,
       RoundEnvironment roundEnv) {
 
-    // Search for annotated fields
+    // Search for annotated views
     ViewTypeSearcher viewTypeSearcher = new ViewTypeSearcher(objectGraph);
     for (Element element : roundEnv.getElementsAnnotatedWith(ViewType.class)) {
       ViewType annotation = element.getAnnotation(ViewType.class);

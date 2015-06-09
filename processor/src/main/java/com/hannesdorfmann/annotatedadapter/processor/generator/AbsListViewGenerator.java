@@ -3,6 +3,7 @@ package com.hannesdorfmann.annotatedadapter.processor.generator;
 import com.hannesdorfmann.annotatedadapter.AbsListViewAdapterDelegator;
 import com.hannesdorfmann.annotatedadapter.processor.AdapterInfo;
 import com.hannesdorfmann.annotatedadapter.processor.FieldInfo;
+import com.hannesdorfmann.annotatedadapter.processor.ViewInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeInfo;
 import com.hannesdorfmann.annotatedadapter.processor.ViewTypeSearcher;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
@@ -281,19 +282,24 @@ public class AbsListViewGenerator implements CodeGenerator {
           EnumSet.of(Modifier.PUBLIC, Modifier.STATIC));
       jw.emitEmptyLine();
 
-      // Insert fields
-      for (FieldInfo f : v.getFields()) {
-        jw.emitField(f.getQualifiedClassName(), f.getFieldName(), EnumSet.of(Modifier.PUBLIC));
+      // Insert view fields
+      for (ViewInfo f : v.getViews()) {
+        jw.emitField(f.getQualifiedClassName(), f.getViewFieldName(), EnumSet.of(Modifier.PUBLIC));
       }
 
-      if (!v.getFields().isEmpty()) {
+      // Insert not UI fields
+      for (FieldInfo f : v.getFields()) {
+        jw.emitField(f.getQualifiedClassName(), f.getViewFieldName(), EnumSet.of(Modifier.PUBLIC));
+      }
+
+      if (!v.getViews().isEmpty() || !v.getFields().isEmpty()) {
         jw.emitEmptyLine();
       }
 
       jw.beginConstructor(EnumSet.of(Modifier.PUBLIC), "android.view.View", "view");
       jw.emitEmptyLine();
-      for (FieldInfo f : v.getFields()) {
-        jw.emitStatement("%s = (%s) view.findViewById(%d)", f.getFieldName(),
+      for (ViewInfo f : v.getViews()) {
+        jw.emitStatement("%s = (%s) view.findViewById(%d)", f.getViewFieldName(),
             f.getQualifiedClassName(), f.getId());
       }
       jw.endConstructor();
