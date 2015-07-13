@@ -14,7 +14,7 @@ android {
   }
   buildTypes {
     release {
-      runProguard false
+      minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
@@ -24,7 +24,7 @@ android {
   }
 }
 
-def adapterVersion = '0.5.43-SNAPSHOT'
+def adapterVersion = '1.1.0'
 
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])

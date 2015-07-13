@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.hannesdorfmann.annotatedadapter.AbsListViewAnnotatedAdapter;
-import com.hannesdorfmann.annotatedadapter.annotation.Field;
+import com.hannesdorfmann.annotatedadapter.annotation.ViewField;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import com.hannesdorfmann.annotatedadaptertest.R;
 import java.util.List;
@@ -18,13 +18,13 @@ public class ListAdapter extends AbsListViewAnnotatedAdapter implements ListAdap
 
   @ViewType(
       layout = R.layout.row_small,
-      fields = @Field(id = R.id.textView, name = "text", type = TextView.class),
+      views = @ViewField(id = R.id.textView, name = "text", type = TextView.class),
       initMethod = true)
   public final int rowSimple = 0;
 
   @ViewType(
       layout = R.layout.row_medium,
-      fields = @Field(id = R.id.textView, name = "text", type = TextView.class),
+      views = @ViewField(id = R.id.textView, name = "text", type = TextView.class),
       initMethod = true)
   public final int rowMedium = 1;
 

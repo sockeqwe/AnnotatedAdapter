@@ -3,7 +3,7 @@ package com.hannesdorfmann.annotatedadaptertest.recycler.inheritance;
 import android.content.Context;
 import android.graphics.Color;
 import android.widget.TextView;
-import com.hannesdorfmann.annotatedadapter.annotation.Field;
+import com.hannesdorfmann.annotatedadapter.annotation.ViewField;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import com.hannesdorfmann.annotatedadaptertest.R;
 import java.util.List;
@@ -15,7 +15,7 @@ public class DualColorAdapter extends AbsColorAdapter implements DualColorAdapte
 
   @ViewType(
       layout = R.layout.row_medium,
-      fields = @Field(id = R.id.textView, name = "text", type = TextView.class))
+      views = @ViewField(id = R.id.textView, name = "text", type = TextView.class))
   public final int mediumRow = 1;
 
   public DualColorAdapter(Context context, List<String> items) {

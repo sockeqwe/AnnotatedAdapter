@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.hannesdorfmann.annotatedadapter.annotation.Field;
+import com.hannesdorfmann.annotatedadapter.annotation.ViewField;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import com.hannesdorfmann.annotatedadaptertest.R;
 import java.util.List;
@@ -17,7 +17,7 @@ public class TwoColorsAdapter extends AbsColorAdapter implements TwoColorsAdapte
 
   @ViewType(
       layout = R.layout.row_medium,
-      fields = @Field(id = R.id.textView, name = "text", type = TextView.class),
+      views = @ViewField(id = R.id.textView, name = "text", type = TextView.class),
       initMethod = true)
   public final int rowMedium = 1;
 

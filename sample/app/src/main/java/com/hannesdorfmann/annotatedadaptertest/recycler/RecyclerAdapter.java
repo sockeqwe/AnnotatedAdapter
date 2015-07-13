@@ -3,7 +3,7 @@ package com.hannesdorfmann.annotatedadaptertest.recycler;
 import android.content.Context;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.hannesdorfmann.annotatedadapter.annotation.Field;
+import com.hannesdorfmann.annotatedadapter.annotation.ViewField;
 import com.hannesdorfmann.annotatedadapter.annotation.ViewType;
 import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportAnnotatedAdapter;
 import com.hannesdorfmann.annotatedadaptertest.R;
@@ -16,14 +16,14 @@ public class RecyclerAdapter extends SupportAnnotatedAdapter implements Recycler
 
   @ViewType(
       layout = R.layout.row_medium,
-      fields = @Field(id = R.id.textView, name = "text", type = TextView.class))
+      views = @ViewField(id = R.id.textView, name = "text", type = TextView.class))
   public final int mediumRow = 0;
 
   @ViewType(
       layout = R.layout.row_with_pic,
-      fields = {
-          @Field(id = R.id.textView, name = "text", type = TextView.class),
-          @Field(id = R.id.imageView, name = "image", type = ImageView.class)
+      views = {
+          @ViewField(id = R.id.textView, name = "text", type = TextView.class),
+          @ViewField(id = R.id.imageView, name = "image", type = ImageView.class)
       }
 
   )
@@ -31,7 +31,7 @@ public class RecyclerAdapter extends SupportAnnotatedAdapter implements Recycler
 
   @ViewType(
       layout = R.layout.row_small,
-      fields = @Field(id = R.id.textView, name = "text", type = TextView.class))
+      views = @ViewField(id = R.id.textView, name = "text", type = TextView.class))
   public final int smallRow = 2;
 
   List<String> items;
