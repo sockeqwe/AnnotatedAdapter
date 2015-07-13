@@ -56,8 +56,7 @@ public class SampleAdapter extends SupportAnnotatedAdapter
             id = R.id.textView,       // The id of this view
             name = "text",            // The name of this field in the generated ViewHolder
             type = TextView.class)    // The type (class) of view in the generated view holder
-            }
-        }
+      }
    )
   public final int mediumRow = 0;     // The annotated ViewType constant
 
@@ -94,7 +93,6 @@ public class SampleAdapter extends SupportAnnotatedAdapter
     else
         return rowWithPic;
     }
-  }
   
   /**
    * Bind the data to this view type mediumRow; MediumRowViewHolder was generated
