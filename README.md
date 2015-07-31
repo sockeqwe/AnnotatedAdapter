@@ -131,7 +131,7 @@ Even if there are already some comments in the code shown above, let's review th
              @ViewField(id = R.id.textView, name = "fooText", type = TextView.class),
              @ViewField(id = R.id.imageView, name = "image", type = ImageView.class)
          },
-         field = { // other fields (not Views)
+         fields = { // other fields (not Views)
             @Field(name="listener", type = MyClickListener.class )
          }
 
