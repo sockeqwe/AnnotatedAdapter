@@ -24,17 +24,17 @@ To run annotation processing you need to apply Hugo Visser's awesome [android-ap
  - Use `SupportAnnotatedAdapter` as base class and the following dependencies for `RecyclerView` from **support library**
 ```groovy
 dependencies {
-	compile 'com.hannesdorfmann.annotatedadapter:annotation:1.1.0'
-	compile 'com.hannesdorfmann.annotatedadapter:support-recyclerview:1.1.0'
-	apt 'com.hannesdorfmann.annotatedadapter:processor:1.1.0'
+	compile 'com.hannesdorfmann.annotatedadapter:annotation:1.1.1'
+	compile 'com.hannesdorfmann.annotatedadapter:support-recyclerview:1.1.1'
+	apt 'com.hannesdorfmann.annotatedadapter:processor:1.1.1'
 }
 ```
 
  - Use `AbsListAnnotatedAdapter` as base class and the following dependencies for `AbsListView widgets` like `ListView` or `GridView`: 
 ```groovy
 dependencies {
-	compile 'com.hannesdorfmann.annotatedadapter:annotation:1.1.0'
-	apt 'com.hannesdorfmann.annotatedadapter:processor:1.1.0'
+	compile 'com.hannesdorfmann.annotatedadapter:annotation:1.1.1'
+	apt 'com.hannesdorfmann.annotatedadapter:processor:1.1.1'
 }
 ```
 
