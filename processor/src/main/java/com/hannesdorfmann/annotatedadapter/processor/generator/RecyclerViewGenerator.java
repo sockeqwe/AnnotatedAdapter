@@ -8,7 +8,6 @@ import com.hannesdorfmann.annotatedadapter.processor.ViewTypeSearcher;
 import com.hannesdorfmann.annotatedadapter.processor.util.ProcessorMessage;
 import com.hannesdorfmann.annotatedadapter.processor.util.TypeHelper;
 import com.hannesdorfmann.annotatedadapter.support.recyclerview.SupportRecyclerAdapterDelegator;
-import repacked.com.squareup.javawriter.JavaWriter;
 import dagger.ObjectGraph;
 import java.io.IOException;
 import java.io.Writer;
@@ -22,6 +21,7 @@ import javax.inject.Inject;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
+import repacked.com.squareup.javawriter.JavaWriter;
 
 /**
  * @author Hannes Dorfmann
@@ -31,14 +31,17 @@ public class RecyclerViewGenerator implements CodeGenerator {
   private static String VIEW_HOLDER = "android.support.v7.widget.RecyclerView.ViewHolder";
 
   private AdapterInfo info;
-  @Inject Filer filer;
-  @Inject TypeHelper typeHelper;
-  @Inject ProcessorMessage logger;
+  @Inject
+  Filer filer;
+  @Inject
+  TypeHelper typeHelper;
+  @Inject
+  ProcessorMessage logger;
 
   private Map<String, AdapterInfo> adaptersMap;
 
   public RecyclerViewGenerator(ObjectGraph graph, AdapterInfo info,
-      Map<String, AdapterInfo> adaptersMap) {
+                               Map<String, AdapterInfo> adaptersMap) {
     this.info = info;
     this.adaptersMap = adaptersMap;
     graph.inject(this);
@@ -99,6 +102,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.emitEmptyLine();
 
     // onCreateViewHolder
+    jw.emitAnnotation("android.annotation.SuppressLint(\"ResourceType\")");
     jw.beginMethod(VIEW_HOLDER, "onCreateViewHolder", EnumSet.of(Modifier.PUBLIC),
         ViewTypeSearcher.SUPPORT_RECYCLER_ADAPTER, "adapter", "android.view.ViewGroup", "parent",
         "int", "viewType");
@@ -275,6 +279,7 @@ public class RecyclerViewGenerator implements CodeGenerator {
     jw.emitEmptyLine();
 
     for (ViewTypeInfo v : info.getViewTypes()) {
+      jw.emitAnnotation("android.annotation.SuppressLint(\"ResourceType\")");
       jw.beginType(v.getViewHolderClassName(), "class",
           EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), VIEW_HOLDER);
       jw.emitEmptyLine();
@@ -357,7 +362,8 @@ public class RecyclerViewGenerator implements CodeGenerator {
     return true;
   }
 
-  @Override public void generateCode() throws IOException {
+  @Override
+  public void generateCode() throws IOException {
     if (checkViewTypeIntegerValues()) {
       generateViewHolders();
       generateBinderInterface();

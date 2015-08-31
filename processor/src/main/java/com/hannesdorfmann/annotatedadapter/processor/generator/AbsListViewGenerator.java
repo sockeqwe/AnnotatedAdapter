@@ -98,6 +98,7 @@ public class AbsListViewGenerator implements CodeGenerator {
     jw.emitEmptyLine();
 
     // onCreateViewHolder
+    jw.emitAnnotation("android.annotation.SuppressLint(\"ResourceType\")");
     jw.beginMethod("View", "onCreateViewHolder", EnumSet.of(Modifier.PUBLIC),
         ViewTypeSearcher.LISTVIEW_ADAPTER, "adapter", "ViewGroup", "parent", "int", "viewType");
 
@@ -278,6 +279,8 @@ public class AbsListViewGenerator implements CodeGenerator {
     jw.emitEmptyLine();
 
     for (ViewTypeInfo v : info.getViewTypes()) {
+
+      jw.emitAnnotation("android.annotation.SuppressLint(\"ResourceType\")");
       jw.beginType(v.getViewHolderClassName(), "class",
           EnumSet.of(Modifier.PUBLIC, Modifier.STATIC));
       jw.emitEmptyLine();
