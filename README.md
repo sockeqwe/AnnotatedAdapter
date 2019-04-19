@@ -1,6 +1,6 @@
 # AnnotatedAdapter
 
-**This Project is no longer maintained.*"
+**This Project is no longer maintained.**
 
 Sick of writing ViewHolder classes, inflate xml and distinguish ViewTypes in your adapters?  
 Write less code with AnnotatedAdapter, an annotation processor for generating `RecyclerView` and `AbsListView` adapters. So you **no longer have to write boilerplate code** like ViewHolder classes, inflate xml layouts and lots of if-else or switch-case to determine how to bind the data to the view holder by hand. **AnnotatedAdpater generates that boilerplate code for you** at compile time by annotation processing (not using reflections, so performance will be the same as handwritten). 
