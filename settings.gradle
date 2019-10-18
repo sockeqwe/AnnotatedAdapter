@@ -7,4 +7,4 @@ include(':annotation')
 include(':processor')
 include(':support-recyclerview-stub')
 include(':support-recyclerview')
-include(':sample')
+
