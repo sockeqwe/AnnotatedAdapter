@@ -29,8 +29,8 @@ dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation 'com.hannesdorfmann.annotatedadapter:support-recyclerview:' + adapterVersion
   annotationProcessor 'com.hannesdorfmann.annotatedadapter:processor:' + adapterVersion
-  implementation 'com.jakewharton:butterknife:5.1.2'
-  annotationProcessor 'com.jakewharton:butterknife:5.1.2'
+  implementation 'com.jakewharton:butterknife:8.6.0'
+  annotationProcessor 'com.jakewharton:butterknife:8.6.0'
 
   implementation 'com.android.support:recyclerview-v7:+'
 }
