@@ -28,7 +28,7 @@ import repacked.com.squareup.javawriter.JavaWriter;
  */
 public class RecyclerViewGenerator implements CodeGenerator {
 
-  private static String VIEW_HOLDER = "android.support.v7.widget.RecyclerView.ViewHolder";
+  private static String VIEW_HOLDER = "androidx.recyclerview.widget.RecyclerView.ViewHolder";
 
   private AdapterInfo info;
   @Inject

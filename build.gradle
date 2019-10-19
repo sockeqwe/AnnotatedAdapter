@@ -1,6 +1,6 @@
 allprojects {
     group = 'com.hannesdorfmann.annotatedadapter'
-    version = '1.1.2-SNAPSHOT'
+    version = '1.1.4'
 }
 
 subprojects {
@@ -17,10 +17,6 @@ subprojects {
 
     sourceCompatibility = '1.8'
 
-    ext.repoUrlString = 'https://maven.pkg.github.com/oradkovsky/AnnotatedAdapter'
-    ext.repoUserKey = 'GPR_USER'
-    ext.repoUserApiKey = 'GPR_API_KEY'
-
     task sourcesJar(type: Jar) {
         classifier = 'sources'
         from(sourceSets.main.allJava)
@@ -33,20 +29,15 @@ subprojects {
     publishing {
         repositories {
             maven {
-                name = "GitHubPackages"
-                url = uri(repoUrlString)
+                url "https://annotatedadapter.appspot.com"
                 credentials {
-                    username = System.getenv(repoUserKey)
-                    password = System.getenv(repoUserApiKey)
+                    username System.getenv("AP_PUBLISH_USER")
+                    password System.getenv("AP_PUBLISH_PASSWORD")
                 }
             }
         }
 
         publications {
-            gpr(MavenPublication) {
-                from(components.java)
-                artifact(sourcesJar)
-            }
             maven(MavenPublication) {
                 from(components.java)
                 artifact(sourcesJar)

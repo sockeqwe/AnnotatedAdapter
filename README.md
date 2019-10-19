@@ -1,6 +1,17 @@
 # AnnotatedAdapter
 
-**This Project is no longer maintained.**
+**10/19/2019: Migration to AndroidX**
+
+Please look into sample project for details on how to configure maven repo access. Latest artifacts version is 1.1.4:
+
+```groovy
+dependencies {
+    implementation 'com.hannesdorfmann.annotatedadapter:support-recyclerview:1.1.4'
+    annotationProcessor 'com.hannesdorfmann.annotatedadapter:processor:1.1.4'
+}
+```
+
+~~**This Project is no longer maintained.**~~
 
 Sick of writing ViewHolder classes, inflate xml and distinguish ViewTypes in your adapters?  
 Write less code with AnnotatedAdapter, an annotation processor for generating `RecyclerView` and `AbsListView` adapters. So you **no longer have to write boilerplate code** like ViewHolder classes, inflate xml layouts and lots of if-else or switch-case to determine how to bind the data to the view holder by hand. **AnnotatedAdpater generates that boilerplate code for you** at compile time by annotation processing (not using reflections, so performance will be the same as handwritten). 

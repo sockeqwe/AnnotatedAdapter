@@ -14,19 +14,14 @@ buildscript {
 }
 
 allprojects {
-    ext.repoUrlString = 'https://maven.pkg.github.com/oradkovsky/AnnotatedAdapter'
-    ext.repoUserKey = 'GPR_USER'
-    ext.repoUserApiKey = 'GPR_API_KEY'
-
     repositories {
         google()
         jcenter()
         maven {
-            name = "GitHubPackages"
-            url = uri(repoUrlString)
+            url "https://annotatedadapter.appspot.com"
             credentials {
-                username = System.getenv(repoUserKey)
-                password = System.getenv(repoUserApiKey)
+                username 'user'
+                password 'as09d90ok322kj32'
             }
         }
     }

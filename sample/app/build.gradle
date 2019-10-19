@@ -21,16 +21,21 @@ android {
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.hannesdorfmann.annotatedadapter:support-recyclerview:+'
-    annotationProcessor 'com.hannesdorfmann.annotatedadapter:processor:+'
+    implementation 'com.hannesdorfmann.annotatedadapter:support-recyclerview:1.1.4'
+    annotationProcessor 'com.hannesdorfmann.annotatedadapter:processor:1.1.4'
 
-    implementation 'com.jakewharton:butterknife:8.6.0'
-    annotationProcessor 'com.jakewharton:butterknife:8.6.0'
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
 
-    implementation 'com.android.support:recyclerview-v7:+'
+    implementation 'androidx.recyclerview:recyclerview:+'
 }
