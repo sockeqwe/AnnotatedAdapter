@@ -1,0 +1,51 @@
+allprojects {
+    group = 'com.hannesdorfmann.annotatedadapter'
+    version = '1.1.4'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    repositories {
+        mavenLocal()
+
+        maven {
+            url = 'http://repo.maven.apache.org/maven2'
+        }
+    }
+
+    sourceCompatibility = '1.8'
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from(sourceSets.main.allJava)
+    }
+
+    configurations.all {
+
+    }
+
+    publishing {
+        repositories {
+            maven {
+                url "https://annotatedadapter.appspot.com"
+                credentials {
+                    username System.getenv("AP_PUBLISH_USER")
+                    password System.getenv("AP_PUBLISH_PASSWORD")
+                }
+            }
+        }
+
+        publications {
+            maven(MavenPublication) {
+                from(components.java)
+                artifact(sourcesJar)
+            }
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+}

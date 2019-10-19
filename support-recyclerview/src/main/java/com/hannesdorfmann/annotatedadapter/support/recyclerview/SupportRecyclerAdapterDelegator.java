@@ -1,7 +1,7 @@
 package com.hannesdorfmann.annotatedadapter.support.recyclerview;
 
 import android.view.ViewGroup;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @author Hannes Dorfmann

@@ -1,7 +1,7 @@
 // IntelliJ API Decompiler stub source generated from a class file
 // Implementation of methods is not available
 
-package android.support.v7.widget;
+package androidx.recyclerview.widget;
 
 public class RecyclerView {
 

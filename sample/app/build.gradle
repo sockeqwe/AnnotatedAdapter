@@ -1,36 +1,41 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-  compileSdkVersion 21
-  buildToolsVersion "20.0.0"
+    compileSdkVersion 28
+    buildToolsVersion "29.0.0"
 
-  defaultConfig {
-    applicationId "com.hannesdorfmann.annotatedadaptertest"
-    minSdkVersion 14
-    targetSdkVersion 21
-    versionCode 1
-    versionName "1.0"
-  }
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    defaultConfig {
+        applicationId "com.hannesdorfmann.annotatedadaptertest"
+        minSdkVersion 14
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
     }
-  }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 
-  packagingOptions {
-    exclude 'META-INF/services/javax.annotation.processing.Processor'
-  }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
-def adapterVersion = '1.1.0'
-
 dependencies {
-  compile fileTree(dir: 'libs', include: ['*.jar'])
-  compile 'com.hannesdorfmann.annotatedadapter:support-recyclerview:' + adapterVersion
-  apt 'com.hannesdorfmann.annotatedadapter:processor:' + adapterVersion
-  compile 'com.jakewharton:butterknife:5.1.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-  compile 'com.android.support:recyclerview-v7:+'
+    implementation 'com.hannesdorfmann.annotatedadapter:support-recyclerview:1.1.4'
+    annotationProcessor 'com.hannesdorfmann.annotatedadapter:processor:1.1.4'
+
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+
+    implementation 'androidx.recyclerview:recyclerview:+'
 }
